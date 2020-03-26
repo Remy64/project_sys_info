@@ -81,6 +81,7 @@ Expression:
     | tNOT Expression
     | tMINUS Expression             %prec tNOT
     | Valeur
+    | tNAME
     ;
 
 Valeur:
@@ -101,5 +102,6 @@ void yyerror(const char *s) {
 }
 
 int main(void) {
-    yylex();
+    //yylex();
+    yyparse();
 }
