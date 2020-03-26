@@ -1,7 +1,7 @@
 %{
 
 #include <stdlib.h>
-#include "y.tab.h"
+#include "parser.h"
 
 %}
 
@@ -16,7 +16,7 @@ name [a-zA-Z][a-zA-Z0-9_]*
 %%
 
 blank {
-    //nothing
+    	//nothing
 }
 "(" {
 	printf("tOB ");
@@ -113,22 +113,7 @@ blank {
 	return(tCHAR);
 }
 
-" " {
-	printf("tSPACE ");
-	//return(tSPACE);
-}
-"\t" {
-	printf("tTAB ");
-	//return(tTAB);
-}
-"\n" {
-	printf("tNL\n");
-	//return(tNL);
-}
-"\b" {
-	printf("tBS ");
-	//return(tBS);
-}
+
 "," {
 	printf("tCOMMA ");
 	//return(tCOMMA);

@@ -57,13 +57,14 @@ Instruction:
     | tRETURN Valeur tSC
     | tRETURN tOB tNAME tCB tSC
     | tRETURN tOB Valeur tCB tSC
+    | /* epsilon */
     ;
 
 Type: 
       tINT
     | tVOID
     | tCHAR
-    ;   
+    ;
 
 Expression:
       tOB Expression tCB
@@ -93,6 +94,10 @@ Valeur:
 
 int yywrap(void) {
     return 1;
+}
+
+void yyerror(const char *s) {
+    printf("%s\n", s);
 }
 
 int main(void) {
