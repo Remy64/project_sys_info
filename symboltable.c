@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include "symboltable.h"
 
 #define MAX_SIZE 1000
 #define INT_TYPE 1

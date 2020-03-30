@@ -71,13 +71,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 #include <math.h>
+#include "symboltable.h"
 
 int yylex();
 void yyerror(const char *s);
 
 
-#line 81 "y.tab.c" /* yacc.c:337  */
+#line 84 "y.tab.c" /* yacc.c:337  */
 # ifndef YY_NULLPTR
 #  if defined __cplusplus
 #   if 201103L <= __cplusplus
@@ -493,10 +496,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    42,    42,    43,    44,    48,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    64,    65,    66,    70,    71,
-      72,    73,    74,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    84,    88,    89,    90,    91
+       0,    45,    45,    46,    47,    51,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    67,    68,    69,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,    82,    83,    84,
+      85,    86,    87,    91,    92,    93,    94
 };
 #endif
 
@@ -1330,7 +1333,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1334 "y.tab.c" /* yacc.c:1652  */
+#line 1337 "y.tab.c" /* yacc.c:1652  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1561,7 +1564,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 94 "parser.y" /* yacc.c:1918  */
+#line 97 "parser.y" /* yacc.c:1918  */
 
 
 int yywrap(void) {

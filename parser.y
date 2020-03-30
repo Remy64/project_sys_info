@@ -2,7 +2,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 #include <math.h>
+#include "symboltable.h"
 
 int yylex();
 void yyerror(const char *s);
