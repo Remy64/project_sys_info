@@ -10,6 +10,12 @@
 int yylex();
 void yyerror(const char *s);
 
+int tempAddrPointer = 100;
+
+void operation(const char * operation, int addr1, int addr2) {
+	printf("%s %d %d %d", operation, addr1, addr1, addr2);
+}
+
 %}
 
 
@@ -33,6 +39,7 @@ void yyerror(const char *s);
 %token tPRINTF
 %token tMAIN
 
+%token tCONST
 %token tNAME
 %token tINT_VAL tFLOAT_VAL tCHAR_VAL
 %token tRETURN
@@ -51,49 +58,133 @@ Body:
 	;
 
 Instruction:
-	  Type tNAME tAFF Expression tSC Instruction
-	| Type tNAME tSC Instruction
-	| tNAME tAFF Expression tSC Instruction
+	  Type tNAME tAFF Expression tSC {
+		//printf("Type : %d", $1.i);
+		//printf("Var Name : %s", $2.str);
+		//printf("Expression : %d", $4.i);
+		int varAddr = pushSymbol($2.str, $1.i, false, true);
+		printf("AFF %d %d", varAddr, $4.i);
+	} Instruction
+	| Type tCONST tNAME tAFF Expression tSC {
+		int varAddr = pushSymbol($3.str, $1.i, true, true);
+		printf("AFF %d %d", varAddr, $5.i);
+	} Instruction
+	| Type tNAME tSC {
+		pushSymbol($2.str, $1.i, false, false);
+	} Instruction
+	| tNAME tAFF Expression tSC {
+		//printf("Var Name : %s", $1.str);
+		//printf("Expression : %d", $3.i);
+		int varAddr = getSymbolAddr($1.str);
+		if(isSymbolConst(varAddr)) {
+			printf("FATAL ERROR : Can not affect a value to a constant");
+			exit(-1);
+		}
+		if(!isSymbolInit(varAddr)) {
+			initializeSymbol(varAddr);
+		}
+		printf("AFF %d %d", varAddr, $3.i);
+	} Instruction
 	| tPRINTF tOB Expression tCB tSC Instruction
 	| tRETURN Expression tSC
-	//| tRETURN tOB Expression tCB tSC
 	| /* epsilon */
 	;
 
 Type: 
-	  tINT
-	| tFLOAT
+	  tINT {
+		$$.i = INT_TYPE;
+	}
+	| tFLOAT {
+		$$.i = FLOAT_TYPE;
+	}
 	| tVOID
-	| tCHAR
+	| tCHAR {
+		$$.i = CHAR_TYPE;
+	}
 	;
 
 Expression:
-	  tOB Expression tCB
-	| Expression tPLUS Expression
-	| Expression tMINUS Expression
-	| Expression tMUL Expression
-	| Expression tDIV Expression
-	| Expression tEQ Expression
-	| Expression tDIF Expression
-	| Expression tSINF Expression
-	| Expression tSSUP Expression
-	| Expression tINF Expression
-	| Expression tSUP Expression
-	| tNOT Expression
-	| tMINUS Expression             %prec tNOT
-	| Valeur
-	| tNAME
+	  tOB Expression tCB {
+		$$.i = $2.i;
+	}
+	| Expression tPLUS Expression {
+		$$.i = $1.i;
+		//printf("ADD %d %d %d", $$, $1, $3);
+		operation("ADD", $1.i, $2.i);
+	}
+	| Expression tMINUS Expression {
+		$$.i = $1.i;
+		operation("SOU", $1.i, $2.i);
+	}
+	| Expression tMUL Expression {
+		$$.i = $1.i;
+		operation("MUL", $1.i, $2.i);
+	}
+	| Expression tDIV Expression {
+		$$.i = $1.i;
+		operation("DIV", $1.i, $2.i);
+	}
+	| Expression tEQ Expression {
+		$$.i = $1.i;
+		operation("EQU", $1.i, $2.i);
+	}
+	| Expression tDIF Expression {
+		//DIF = EQU
+		$$.i = $1.i;
+		operation("EQU", $1.i, $2.i);
+	}
+	| Expression tSINF Expression {
+		$$.i = $1.i;
+		operation("INF", $1.i, $2.i);
+	}
+	| Expression tSSUP Expression {
+		$$.i = $1.i;
+		operation("SUP", $1.i, $2.i);
+	}
+	| Expression tINF Expression {
+		$$.i = $1.i;
+		operation("INF", $1.i, $2.i);
+	}
+	| Expression tSUP Expression {
+		$$.i = $1.i;
+		operation("SUP", $1.i, $2.i);
+	}
+	| tNOT Expression {
+		//le not n'existe pas
+		$$.i = $2.i;
+	}
+	| tMINUS Expression {
+		$$.i = tempAddrPointer;
+		printf("COP %d 0", tempAddrPointer);
+		printf("SOU %d %d %d", $$.i, tempAddrPointer, $2.i);
+		tempAddrPointer++;
+	}            %prec tNOT
+	| Valeur {
+		$$.i = tempAddrPointer;
+		printf("AFC %d %d", tempAddrPointer, $1.i);
+		tempAddrPointer++;
+	}
+	| tNAME {
+		$$.i = tempAddrPointer;
+		int varAddr = getSymbolAddr($1.str);
+		if(!isSymbolInit(varAddr)) {
+			printf("FATAL ERROR : Can not get the value of an unitialized variable");
+			exit(-1);
+		}
+		printf("COP %d %d", $$.i, varAddr);
+		tempAddrPointer++;
+	}
 	;
 
 Valeur:
 	  tINT_VAL {
-		$$ = $1;
+		$$.i = $1.i;
 	}
 	| tFLOAT_VAL {
-		$$ = $1;
+		$$.i = (int)$1.x;
 	}
 	| tCHAR_VAL {
-		$$ = $1;
+		$$.i = (int)$1.c;
 	}
 	;
 

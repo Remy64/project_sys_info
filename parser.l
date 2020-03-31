@@ -96,7 +96,7 @@ blank {
 
 "const" {
 	printf("tCONST ");
-	//return(tCONST);
+	return(tCONST);
 }
 
 "int" {

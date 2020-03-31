@@ -78,11 +78,12 @@ extern int yydebug;
     tSC = 284,
     tPRINTF = 285,
     tMAIN = 286,
-    tNAME = 287,
-    tINT_VAL = 288,
-    tFLOAT_VAL = 289,
-    tCHAR_VAL = 290,
-    tRETURN = 291
+    tCONST = 287,
+    tNAME = 288,
+    tINT_VAL = 289,
+    tFLOAT_VAL = 290,
+    tCHAR_VAL = 291,
+    tRETURN = 292
   };
 #endif
 /* Tokens.  */
@@ -115,11 +116,12 @@ extern int yydebug;
 #define tSC 284
 #define tPRINTF 285
 #define tMAIN 286
-#define tNAME 287
-#define tINT_VAL 288
-#define tFLOAT_VAL 289
-#define tCHAR_VAL 290
-#define tRETURN 291
+#define tCONST 287
+#define tNAME 288
+#define tINT_VAL 289
+#define tFLOAT_VAL 290
+#define tCHAR_VAL 291
+#define tRETURN 292
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

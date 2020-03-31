@@ -945,7 +945,7 @@ YY_RULE_SETUP
 #line 97 "parser.l"
 {
 	printf("tCONST ");
-	//return(tCONST);
+	return(tCONST);
 }
 	YY_BREAK
 case 21:

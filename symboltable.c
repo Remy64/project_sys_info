@@ -6,7 +6,8 @@
 
 #define MAX_SIZE 1000
 #define INT_TYPE 1
-#define CHAR_TYPE 2
+#define FLOAT_TYPE 2
+#define CHAR_TYPE 3
 
 typedef struct {
 	char * id;
@@ -34,7 +35,7 @@ void decrementDepth() {
 }
 
 //called when one wants to declare a variable
-void pushSymbol(char * id, int type, bool isConst, bool isInit) {
+int pushSymbol(char * id, int type, bool isConst, bool isInit) {
 	for(int i=0; i<currentTableSize; i++) {
 		if(strcmp(id, symbolTable[i].id) == 0 && currentDepth == symbolTable[i].depth) {
 			printf("Fatal Error : Two variables with the same name can not be declared in the same scope");
@@ -46,6 +47,7 @@ void pushSymbol(char * id, int type, bool isConst, bool isInit) {
 	symbolTable[currentTableSize].isInit = isInit;
 	symbolTable[currentTableSize].depth = currentDepth;
 	currentTableSize++;
+	return currentTableSize-1;
 }
 
 //called when one wants to get the address of a symbol to write assembly code for example
