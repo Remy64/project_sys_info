@@ -70,17 +70,17 @@ extern int yydebug;
     tINT = 276,
     tVOID = 277,
     tCHAR = 278,
-    tSPACE = 279,
-    tTAB = 280,
-    tNL = 281,
-    tBS = 282,
-    tSC = 283,
-    tPRINTF = 284,
-    tMAIN = 285,
-    tNAME = 286,
-    tINT_VAL = 287,
-    tFLOAT_VAL = 288,
-    tSTR_VAL = 289,
+    tFLOAT = 279,
+    tSPACE = 280,
+    tTAB = 281,
+    tNL = 282,
+    tBS = 283,
+    tSC = 284,
+    tPRINTF = 285,
+    tMAIN = 286,
+    tNAME = 287,
+    tINT_VAL = 288,
+    tFLOAT_VAL = 289,
     tCHAR_VAL = 290,
     tRETURN = 291
   };
@@ -107,17 +107,17 @@ extern int yydebug;
 #define tINT 276
 #define tVOID 277
 #define tCHAR 278
-#define tSPACE 279
-#define tTAB 280
-#define tNL 281
-#define tBS 282
-#define tSC 283
-#define tPRINTF 284
-#define tMAIN 285
-#define tNAME 286
-#define tINT_VAL 287
-#define tFLOAT_VAL 288
-#define tSTR_VAL 289
+#define tFLOAT 279
+#define tSPACE 280
+#define tTAB 281
+#define tNL 282
+#define tBS 283
+#define tSC 284
+#define tPRINTF 285
+#define tMAIN 286
+#define tNAME 287
+#define tINT_VAL 288
+#define tFLOAT_VAL 289
 #define tCHAR_VAL 290
 #define tRETURN 291
 

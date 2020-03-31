@@ -9,7 +9,6 @@ blank [\n\t\r\b ]+
 digit [0-9]
 int {digit}*
 float {digit}*\.{digit}+
-string \".*\"
 char '(\\[ntbr0])|.'
 name [a-zA-Z][a-zA-Z0-9_]*
 
@@ -104,6 +103,10 @@ blank {
 	printf("tINT ");
 	return(tINT);
 }
+"float" {
+	printf("tFLOAT ");
+	return(tFLOAT);
+}
 "void" {
     	printf("tVOID ");
 	return(tVOID);
@@ -154,11 +157,6 @@ blank {
 	printf("tCHAR_VAL ");
     	yylval.c = yytext[0];
 	return(tCHAR_VAL);
-}
-{string} {
-	printf("tSTR_VAL ");
-    	yylval.str = yytext;
-	return(tSTR_VAL);
 }
 
 %%
