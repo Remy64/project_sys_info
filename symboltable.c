@@ -25,11 +25,11 @@ void incrementDepth() {
 	currentDepth++;
 }
 
-//symbols are automatically popped when depth is decremented
+//symbols belonging to the max depth are automatically popped when depth is decremented
 void decrementDepth() {
-	for(int i=currentTableSize-1; i>=0 && symbolTable[i].depth == currentDepth; i--) {
-		currentTableSize--;
-	}
+	int i;
+	for(i=currentTableSize-1; i>=0 && symbolTable[i].depth == currentDepth; i--);
+	currentTableSize = i+1;
 	currentDepth--;
 }
 
@@ -41,32 +41,35 @@ void pushSymbol(char * id, int type, bool isConst, bool isInit) {
 			exit(-1);
 		}
 	}
-	currentTableSize++;
 	strcpy(symbolTable[currentTableSize].id, id);
 	symbolTable[currentTableSize].isConst = isConst;
 	symbolTable[currentTableSize].isInit = isInit;
 	symbolTable[currentTableSize].depth = currentDepth;
+	currentTableSize++;
 }
 
 //called when one wants to get the address of a symbol to write assembly code for example
-//also used is this file
 int getSymbolAddr(char * id) {
 	int i;
-	for(i=currentTableSize; i>=0 && strcmp(id, symbolTable[i].id) != 0; i++);
-	return i-1;
+	for(i=currentTableSize-1; i>=0 && strcmp(id, symbolTable[i].id) != 0; i--);
+	if(i < 0) {
+		printf("Fatal Error : nos symbol \"%s\" found in the table", id);
+		exit(-1);
+	}
+	return i;
 }
 
 //called when one wants to use the value of a symbol to check if it has one
-bool isSymbolInit(char * id) {
-	return symbolTable[getSymbolAddr(id)].isInit;
+bool isSymbolInit(int addr) {
+	return symbolTable[addr].isInit;
 }
 
 //called when one affects a value to a symbol
-void initializeSymbol(char * id) {
-	symbolTable[getSymbolAddr(id)].isInit = true;
+void initializeSymbol(int addr) {
+	symbolTable[addr].isInit = true;
 }
 
 //called when one wants to affect a symbol with a new value to know whether it a constant or not
-bool isSymbolConst(char * id) {
-	return symbolTable[getSymbolAddr(id)].isConst;
+bool isSymbolConst(int addr) {
+	return symbolTable[addr].isConst;
 }
