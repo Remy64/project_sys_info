@@ -42,6 +42,7 @@ int pushSymbol(char * id, int type, bool isConst, bool isInit) {
 			exit(-1);
 		}
 	}
+	symbolTable[currentTableSize].id = malloc(strlen(id)+1);
 	strcpy(symbolTable[currentTableSize].id, id);
 	symbolTable[currentTableSize].isConst = isConst;
 	symbolTable[currentTableSize].isInit = isInit;

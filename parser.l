@@ -140,7 +140,7 @@ blank {
 }
 {name} {
 	printf("tNAME ");
-    	yylval.str = yytext;
+    	yylval.str = strdup(yytext);
 	return(tNAME);
 }
 {int} {
