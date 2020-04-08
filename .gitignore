@@ -1,4 +1,4 @@
 parser
 parser.h
-.l.c
-.y.c
+*.l.c
+*.y.c
