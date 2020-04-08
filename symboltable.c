@@ -56,7 +56,7 @@ int getSymbolAddr(char * id) {
 	int i;
 	for(i=currentTableSize-1; i>=0 && strcmp(id, symbolTable[i].id) != 0; i--);
 	if(i < 0) {
-		printf("Fatal Error : nos symbol \"%s\" found in the table", id);
+		printf("Fatal Error : no symbol \"%s\" found in the table", id);
 		exit(-1);
 	}
 	return i;

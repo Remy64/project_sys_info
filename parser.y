@@ -63,11 +63,11 @@ Instruction:
 		//printf("Var Name : %s", $2.str);
 		//printf("Expression : %d", $4.i);
 		int varAddr = pushSymbol($2.str, $1.i, false, true);
-		printf("AFF %d %d", varAddr, $4.i);
+		printf("COP %d %d", varAddr, $4.i);
 	} Instruction
 	| Type tCONST tNAME tAFF Expression tSC {
 		int varAddr = pushSymbol($3.str, $1.i, true, true);
-		printf("AFF %d %d", varAddr, $5.i);
+		printf("COP %d %d", varAddr, $5.i);
 	} Instruction
 	| Type tNAME tSC {
 		pushSymbol($2.str, $1.i, false, false);
@@ -83,7 +83,7 @@ Instruction:
 		if(!isSymbolInit(varAddr)) {
 			initializeSymbol(varAddr);
 		}
-		printf("AFF %d %d", varAddr, $3.i);
+		printf("COP %d %d", varAddr, $3.i);
 	} Instruction
 	| tPRINTF tOB Expression tCB tSC Instruction
 	| tRETURN Expression tSC
