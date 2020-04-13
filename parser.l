@@ -18,143 +18,151 @@ blank {
     	//nothing
 }
 "(" {
-	printf("tOB ");
+	//printf("tOB ");
 	return(tOB);
 }
 ")" {
-	printf("tCB ");
+	//printf("tCB ");
 	return(tCB);
 }
 
 
 "[" {
-	printf("tOC ");
+	//printf("tOC ");
 	//return(tOC);
 }
 "]" {
-	printf("tCC ");
+	//printf("tCC ");
 	//return(tCC);
 }
 
 
 "{" {
-	printf("tOH ");
+	//printf("tOH ");
 	return(tOH);
 }
 "}" {
-	printf("tCH ");
+	//printf("tCH ");
 	return(tCH);
 }
 "+" {
-	printf("tPLUS ");
+	//printf("tPLUS ");
 	return(tPLUS);
 }
 "-" {
-	printf("tMINUS ");
+	//printf("tMINUS ");
 	return(tMINUS);
 }
 "*" {
-	printf("tMUL ");
+	//printf("tMUL ");
 	return(tMUL);
 }
 "/" {
-	printf("tDIV");
+	//printf("tDIV");
 	return(tDIV);
 }
 "=" {
-	printf("tAFF ");
+	//printf("tAFF ");
 	return(tAFF);
 }
 "==" {
-	printf("tEQ ");
+	//printf("tEQ ");
 	return(tEQ);
 }
 "<" {
-	printf("tSINF ");
+	//printf("tSINF ");
 	return(tSINF);
 }
 ">" {
-	printf("tSSUP ");
+	//printf("tSSUP ");
 	return(tSSUP);
 }
 "<=" {
-	printf("tINF ");
+	//printf("tINF ");
 	return(tINF);
 }
 ">=" {
-	printf("tSUP ");
+	//printf("tSUP ");
 	return(tSUP);
 }
 "!=" {
-	printf("tDIF ");
+	//printf("tDIF ");
 	return(tDIF);
 }
 "!" {
-	printf("tNOT");
+	//printf("tNOT");
 	return(tNOT);
 }
 
 "const" {
-	printf("tCONST ");
+	//printf("tCONST ");
 	return(tCONST);
 }
 
 "int" {
-	printf("tINT ");
+	//printf("tINT ");
 	return(tINT);
 }
 "float" {
-	printf("tFLOAT ");
+	//printf("tFLOAT ");
 	return(tFLOAT);
 }
 "void" {
-    	printf("tVOID ");
+    	//printf("tVOID ");
 	return(tVOID);
 }
 "char" {
-	printf("tCHAR ");
+	//printf("tCHAR ");
 	return(tCHAR);
 }
 
 
 "," {
-	printf("tCOMMA ");
+	//printf("tCOMMA ");
 	//return(tCOMMA);
 }
 
 ";" {
-	printf("tSC ");
+	//printf("tSC ");
 	return(tSC);
 }
 "printf" {
-	printf("tPRINTF ");
+	//printf("tPRINTF ");
 	return(tPRINTF);
 }
 "main" {
-	printf("tMAIN ");
+	//printf("tMAIN ");
 	return(tMAIN);
 }
 "return" {
-    	printf("tRETURN");
+    	//printf("tRETURN");
 	return(tRETURN);
 }
+"if" {
+	//printf("tIF ");
+	return(tIF);
+}
+"else" {
+	//printf("tELSE");
+	return(tELSE);
+}
 {name} {
-	printf("tNAME ");
+	//printf("tNAME ");
     	yylval.str = strdup(yytext);
 	return(tNAME);
 }
 {int} {
-	printf("tINT_VAL ");
+	//printf("tINT_VAL ");
 	yylval.i = atoi(yytext);
 	return(tINT_VAL);
 }
 {float} {
-	printf("tFLOAT_VAL ");
+	//printf("tFLOAT_VAL ");
     	yylval.x = atof(yytext);
 	return(tFLOAT_VAL);
 }
 {char} {
-	printf("tCHAR_VAL ");
+	//printf("tCHAR_VAL ");
     	yylval.c = yytext[0];
 	return(tCHAR_VAL);
 }

@@ -38,6 +38,7 @@ void operation(const char * operation, int addr1, int addr2) {
 %token tSC
 %token tPRINTF
 %token tMAIN
+%token tIF tELSE
 
 %token tCONST
 %token tNAME
@@ -87,7 +88,13 @@ Instruction:
 	} Instruction
 	| tPRINTF tOB Expression tCB tSC Instruction
 	| tRETURN Expression tSC
+	| tIF tOB Expression tCB Body Else Instruction
 	| /* epsilon */
+	;
+
+Else:
+	
+	|tELSE Body 
 	;
 
 Type: 
