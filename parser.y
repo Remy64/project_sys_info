@@ -85,6 +85,7 @@ void instruction(const char * instruction, int arg1, int arg2, int arg3) {
 %token tSC
 %token tPRINTF
 %token tMAIN
+%token tIF tELSE
 
 %token tCONST
 %token tNAME
@@ -129,7 +130,13 @@ Instruction:
 	} Instruction
 	| tPRINTF tOB Expression tCB tSC Instruction
 	| tRETURN Expression tSC
+	| tIF tOB Expression tCB Body Else Instruction
 	| /* epsilon */
+	;
+
+Else:
+	
+	|tELSE Body 
 	;
 
 Type: 
