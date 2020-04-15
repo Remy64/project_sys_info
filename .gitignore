@@ -1,5 +1,6 @@
 parser
-parser.h
+interpreter
 *.l.c
+*.y.h
 *.y.c
 *.s
