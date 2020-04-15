@@ -2,3 +2,4 @@ parser
 parser.h
 *.l.c
 *.y.c
+*.s

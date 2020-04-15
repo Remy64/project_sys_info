@@ -1,3 +1,5 @@
+#!/bin/bash
+
 yacc -d parser.y
 mv y.tab.h parser.h
 mv y.tab.c parser.y.c

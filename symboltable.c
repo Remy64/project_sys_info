@@ -4,7 +4,7 @@
 #include <string.h>
 #include "symboltable.h"
 
-#define MAX_SIZE 1000
+#define MAX_SIZE 100
 #define INT_TYPE 1
 #define FLOAT_TYPE 2
 #define CHAR_TYPE 3
@@ -38,7 +38,7 @@ void decrementDepth() {
 int pushSymbol(char * id, int type, bool isConst, bool isInit) {
 	for(int i=0; i<currentTableSize; i++) {
 		if(strcmp(id, symbolTable[i].id) == 0 && currentDepth == symbolTable[i].depth) {
-			printf("Fatal Error : Two variables with the same name can not be declared in the same scope");
+			fprintf(stderr, "Fatal Error : Two variables with the same name can not be declared in the same scope");
 			exit(-1);
 		}
 	}
@@ -56,7 +56,7 @@ int getSymbolAddr(char * id) {
 	int i;
 	for(i=currentTableSize-1; i>=0 && strcmp(id, symbolTable[i].id) != 0; i--);
 	if(i < 0) {
-		printf("Fatal Error : no symbol \"%s\" found in the table", id);
+		fprintf(stderr, "Fatal Error : no symbol \"%s\" found in the table", id);
 		exit(-1);
 	}
 	return i;

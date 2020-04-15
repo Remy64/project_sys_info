@@ -7,13 +7,60 @@
 #include <math.h>
 #include "symboltable.h"
 
+#define INSTR_BUFFER_SIZE 1000 //increase if necessary
+#define NONE 0
+
 int yylex();
 void yyerror(const char *s);
 
 int tempAddrPointer = 100;
 
-void operation(const char * operation, int addr1, int addr2) {
-	printf("%s %d %d %d", operation, addr1, addr1, addr2);
+char instructionsBuffer[INSTR_BUFFER_SIZE];
+char * currentBufferPointer = instructionsBuffer;
+
+void appendInstruction(const char * instruction) {
+	while((*currentBufferPointer++ = *instruction++) != '\0') {}
+	currentBufferPointer--;
+}
+
+// use NONE when an argument is not needed for readability reasons
+void instruction(const char * instruction, int arg1, int arg2, int arg3) {
+	if (
+		strcmp(instruction, "ADD") == 0 ||
+		strcmp(instruction, "MUL") == 0 ||
+		strcmp(instruction, "SOU") == 0 ||
+		strcmp(instruction, "DIV") == 0 ||
+		strcmp(instruction, "INF") == 0 ||
+		strcmp(instruction, "SUP") == 0 ||
+		strcmp(instruction, "EQU") == 0
+	) {
+		// 3 arguments instruction
+		size_t neededSize = 1 + snprintf(NULL, 0, "%s\t%d\t%d\t%d\n", instruction, arg1, arg2, arg3);
+		char instructionBuffer[neededSize];
+		snprintf(instructionBuffer, sizeof(instructionBuffer), "%s\t%d\t%d\t%d\n", instruction, arg1, arg2, arg3);
+		appendInstruction(instructionBuffer);
+	} else if (
+		strcmp(instruction, "COP") == 0 ||
+		strcmp(instruction, "AFC") == 0 ||
+		strcmp(instruction, "JMF") == 0
+	) {
+		// 2 arguments instruction
+		size_t neededSize = 1 + snprintf(NULL, 0, "%s\t%d\t%d\n", instruction, arg1, arg2);
+		char instructionBuffer[neededSize];
+		snprintf(instructionBuffer, sizeof(instructionBuffer), "%s\t%d\t%d\n", instruction, arg1, arg2);
+		appendInstruction(instructionBuffer);
+	} else if (
+		strcmp(instruction, "JMP") == 0 ||
+		strcmp(instruction, "PRI") == 0
+	) {
+		// 1 argument instruction
+		size_t neededSize = 1 + snprintf(NULL, 0, "%s\t%d\n", instruction, arg1);
+		char instructionBuffer[neededSize];
+		snprintf(instructionBuffer, sizeof(instructionBuffer), "%s\t%d\n", instruction, arg1);
+		appendInstruction(instructionBuffer);
+	} else {
+		fprintf(stderr, "Fatal Error : Unknown instruction \"%s\"", instruction);
+	}
 }
 
 %}
@@ -59,31 +106,26 @@ Body:
 
 Instruction:
 	  Type tNAME tAFF Expression tSC {
-		//printf("Type : %d", $1.i);
-		//printf("Var Name : %s", $2.str);
-		//printf("Expression : %d", $4.i);
 		int varAddr = pushSymbol($2.str, $1.i, false, true);
-		printf("COP %d %d", varAddr, $4.i);
+		instruction("COP", varAddr, $4.i, NONE);
 	} Instruction
 	| Type tCONST tNAME tAFF Expression tSC {
 		int varAddr = pushSymbol($3.str, $1.i, true, true);
-		printf("COP %d %d", varAddr, $5.i);
+		instruction("COP", varAddr, $5.i, NONE);
 	} Instruction
 	| Type tNAME tSC {
 		pushSymbol($2.str, $1.i, false, false);
 	} Instruction
 	| tNAME tAFF Expression tSC {
-		//printf("Var Name : %s", $1.str);
-		//printf("Expression : %d", $3.i);
 		int varAddr = getSymbolAddr($1.str);
 		if(isSymbolConst(varAddr)) {
-			printf("FATAL ERROR : Can not affect a value to a constant");
+			fprintf(stderr, "FATAL ERROR : Can not affect a value to a constant");
 			exit(-1);
 		}
 		if(!isSymbolInit(varAddr)) {
 			initializeSymbol(varAddr);
 		}
-		printf("COP %d %d", varAddr, $3.i);
+		instruction("COP", varAddr, $3.i, NONE);
 	} Instruction
 	| tPRINTF tOB Expression tCB tSC Instruction
 	| tRETURN Expression tSC
@@ -109,45 +151,44 @@ Expression:
 	}
 	| Expression tPLUS Expression {
 		$$.i = $1.i;
-		//printf("ADD %d %d %d", $$, $1, $3);
-		operation("ADD", $1.i, $2.i);
+		instruction("ADD", $$.i, $1.i, $3.i);
 	}
 	| Expression tMINUS Expression {
 		$$.i = $1.i;
-		operation("SOU", $1.i, $2.i);
+		instruction("SOU", $$.i, $1.i, $3.i);
 	}
 	| Expression tMUL Expression {
 		$$.i = $1.i;
-		operation("MUL", $1.i, $2.i);
+		instruction("MUL", $$.i, $1.i, $3.i);
 	}
 	| Expression tDIV Expression {
 		$$.i = $1.i;
-		operation("DIV", $1.i, $2.i);
+		instruction("DIV", $$.i, $1.i, $3.i);
 	}
 	| Expression tEQ Expression {
 		$$.i = $1.i;
-		operation("EQU", $1.i, $2.i);
+		instruction("EQU", $$.i, $1.i, $3.i);
 	}
 	| Expression tDIF Expression {
 		//DIF = EQU
 		$$.i = $1.i;
-		operation("EQU", $1.i, $2.i);
+		instruction("EQU", $$.i, $1.i, $3.i);
 	}
 	| Expression tSINF Expression {
 		$$.i = $1.i;
-		operation("INF", $1.i, $2.i);
+		instruction("INF", $$.i, $1.i, $3.i);
 	}
 	| Expression tSSUP Expression {
 		$$.i = $1.i;
-		operation("SUP", $1.i, $2.i);
+		instruction("SUP", $$.i, $1.i, $3.i);
 	}
 	| Expression tINF Expression {
 		$$.i = $1.i;
-		operation("INF", $1.i, $2.i);
+		instruction("INF", $$.i, $1.i, $3.i);
 	}
 	| Expression tSUP Expression {
 		$$.i = $1.i;
-		operation("SUP", $1.i, $2.i);
+		instruction("SUP", $$.i, $1.i, $3.i);
 	}
 	| tNOT Expression {
 		//le not n'existe pas
@@ -155,23 +196,23 @@ Expression:
 	}
 	| tMINUS Expression {
 		$$.i = tempAddrPointer;
-		printf("COP %d 0", tempAddrPointer);
-		printf("SOU %d %d %d", $$.i, tempAddrPointer, $2.i);
+		instruction("AFC", tempAddrPointer, 0, NONE);
+		instruction("SOU", $$.i, tempAddrPointer, $2.i);
 		tempAddrPointer++;
 	}            %prec tNOT
 	| Valeur {
 		$$.i = tempAddrPointer;
-		printf("AFC %d %d", tempAddrPointer, $1.i);
+		instruction("AFC", tempAddrPointer, $1.i, NONE);
 		tempAddrPointer++;
 	}
 	| tNAME {
 		$$.i = tempAddrPointer;
 		int varAddr = getSymbolAddr($1.str);
 		if(!isSymbolInit(varAddr)) {
-			printf("FATAL ERROR : Can not get the value of an unitialized variable");
+			fprintf(stderr, "FATAL ERROR : Can not get the value of an unitialized variable");
 			exit(-1);
 		}
-		printf("COP %d %d", $$.i, varAddr);
+		instruction("COP", $$.i, varAddr, NONE);
 		tempAddrPointer++;
 	}
 	;
@@ -195,10 +236,12 @@ int yywrap(void) {
 }
 
 void yyerror(const char *s) {
-	printf("%s\n", s);
+	fprintf(stderr, "%s\n", s);
 }
 
 int main(void) {
-	//yylex();
 	yyparse();
+
+	FILE * outputFile = fopen("output.s", "w");
+	fprintf(outputFile, instructionsBuffer);
 }

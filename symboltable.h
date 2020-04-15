@@ -3,7 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define MAX_SIZE 1000
 #define INT_TYPE 1
 #define FLOAT_TYPE 2
 #define CHAR_TYPE 3
