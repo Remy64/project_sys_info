@@ -1,0 +1,2 @@
+xst -intstyle ise -ifn "/home/jb/Documents/Algo/compilateur/project_sys_info/processeur/Processeur/UAL.xst" -ofn "/home/jb/Documents/Algo/compilateur/project_sys_info/processeur/Processeur/UAL.syr" 
+xst -intstyle ise -ifn "/home/jb/Documents/Algo/compilateur/project_sys_info/processeur/Processeur/UAL.xst" -ofn "/home/jb/Documents/Algo/compilateur/project_sys_info/processeur/Processeur/UAL.syr" 

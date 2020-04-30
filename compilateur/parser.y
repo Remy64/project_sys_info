@@ -7,60 +7,98 @@
 #include <math.h>
 #include "symboltable.h"
 
-#define INSTR_BUFFER_SIZE 1000 //increase if necessary
-#define NONE 0
+#define NB_MAX_INSTR 1000 //increase if necessary
+#define INSTR_MAX_SIZE 100 //idem
+#define NONE -1
 
 int yylex();
 void yyerror(const char *s);
 
 int tempAddrPointer = 100;
 
-char instructionsBuffer[INSTR_BUFFER_SIZE];
-char * currentBufferPointer = instructionsBuffer;
+typedef struct {
+	char * name;
+	int arg1;
+	int arg2;
+	int arg3;
+} Instruction;
 
-void appendInstruction(const char * instruction) {
-	while((*currentBufferPointer++ = *instruction++) != '\0') {}
-	currentBufferPointer--;
+Instruction instructionsBuffer[NB_MAX_INSTR];
+int currentBufferSize = 0;
+
+// adds an instructions to the instructions buffer
+// note : use NONE when an argument is not needed for readability reasons
+void instruction(const char * instruction, int arg1, int arg2, int arg3) {
+	instructionsBuffer[currentBufferSize] = (Instruction) {
+		.name = strdup(instruction),
+		.arg1 = arg1,
+		.arg2 = arg2,
+		.arg3 = arg3
+	};
+	currentBufferSize++;
 }
 
-// use NONE when an argument is not needed for readability reasons
-void instruction(const char * instruction, int arg1, int arg2, int arg3) {
-	if (
-		strcmp(instruction, "ADD") == 0 ||
-		strcmp(instruction, "MUL") == 0 ||
-		strcmp(instruction, "SOU") == 0 ||
-		strcmp(instruction, "DIV") == 0 ||
-		strcmp(instruction, "INF") == 0 ||
-		strcmp(instruction, "SUP") == 0 ||
-		strcmp(instruction, "EQU") == 0
-	) {
-		// 3 arguments instruction
-		size_t neededSize = 1 + snprintf(NULL, 0, "%s\t%d\t%d\t%d\n", instruction, arg1, arg2, arg3);
-		char instructionBuffer[neededSize];
-		snprintf(instructionBuffer, sizeof(instructionBuffer), "%s\t%d\t%d\t%d\n", instruction, arg1, arg2, arg3);
-		appendInstruction(instructionBuffer);
-	} else if (
-		strcmp(instruction, "COP") == 0 ||
-		strcmp(instruction, "AFC") == 0 ||
-		strcmp(instruction, "JMF") == 0
-	) {
-		// 2 arguments instruction
-		size_t neededSize = 1 + snprintf(NULL, 0, "%s\t%d\t%d\n", instruction, arg1, arg2);
-		char instructionBuffer[neededSize];
-		snprintf(instructionBuffer, sizeof(instructionBuffer), "%s\t%d\t%d\n", instruction, arg1, arg2);
-		appendInstruction(instructionBuffer);
-	} else if (
-		strcmp(instruction, "JMP") == 0 ||
-		strcmp(instruction, "PRI") == 0
-	) {
-		// 1 argument instruction
-		size_t neededSize = 1 + snprintf(NULL, 0, "%s\t%d\n", instruction, arg1);
-		char instructionBuffer[neededSize];
-		snprintf(instructionBuffer, sizeof(instructionBuffer), "%s\t%d\n", instruction, arg1);
-		appendInstruction(instructionBuffer);
-	} else {
-		fprintf(stderr, "Fatal Error : Unknown instruction \"%s\"", instruction);
+void printInstructions() {
+	char instructionsStrBuffer[NB_MAX_INSTR * INSTR_MAX_SIZE];
+	char * currentStrBufferPointer = instructionsStrBuffer;
+
+	for(int i = 0; i < currentBufferSize; i++) {
+		int maxCopyOnBuffer = instructionsStrBuffer + (NB_MAX_INSTR * INSTR_MAX_SIZE) * sizeof(char) - currentStrBufferPointer;
+		if (
+			strcmp(instructionsBuffer[i].name, "ADD") == 0 ||
+			strcmp(instructionsBuffer[i].name, "MUL") == 0 ||
+			strcmp(instructionsBuffer[i].name, "SOU") == 0 ||
+			strcmp(instructionsBuffer[i].name, "DIV") == 0 ||
+			strcmp(instructionsBuffer[i].name, "INF") == 0 ||
+			strcmp(instructionsBuffer[i].name, "SUP") == 0 ||
+			strcmp(instructionsBuffer[i].name, "EQU") == 0
+		) {
+			// 3 arguments instruction
+			int nbCharsCopied = snprintf(
+				currentStrBufferPointer,
+				maxCopyOnBuffer,
+				"%s\t%d\t%d\t%d\n",
+				instructionsBuffer[i].name,
+				instructionsBuffer[i].arg1,
+				instructionsBuffer[i].arg2,
+				instructionsBuffer[i].arg3
+			);
+			currentStrBufferPointer += nbCharsCopied;
+		} else if (
+			strcmp(instructionsBuffer[i].name, "COP") == 0 ||
+			strcmp(instructionsBuffer[i].name, "AFC") == 0 ||
+			strcmp(instructionsBuffer[i].name, "JMF") == 0
+		) {
+			// 2 arguments instruction
+			int nbCharsCopied = snprintf(
+				currentStrBufferPointer,
+				maxCopyOnBuffer,
+				"%s\t%d\t%d\n",
+				instructionsBuffer[i].name,
+				instructionsBuffer[i].arg1,
+				instructionsBuffer[i].arg2
+			);
+			currentStrBufferPointer += nbCharsCopied;
+		} else if (
+			strcmp(instructionsBuffer[i].name, "JMP") == 0 ||
+			strcmp(instructionsBuffer[i].name, "PRI") == 0
+		) {
+			// 1 argument instruction
+			int nbCharsCopied = snprintf(
+				currentStrBufferPointer,
+				maxCopyOnBuffer, "%s\t%d\n",
+				instructionsBuffer[i].name,
+				instructionsBuffer[i].arg1
+			);
+			currentStrBufferPointer += nbCharsCopied;
+		} else {
+			fprintf(stderr, "Fatal Error : Unknown instruction \"%s\"", instruction);
+			exit(-1);
+		}
 	}
+
+	FILE * outputFile = fopen("output.s", "w");
+	fprintf(outputFile, instructionsStrBuffer);
 }
 
 %}
@@ -248,7 +286,5 @@ void yyerror(const char *s) {
 
 int main(void) {
 	yyparse();
-
-	FILE * outputFile = fopen("output.s", "w");
-	fprintf(outputFile, instructionsBuffer);
+	printInstructions();
 }

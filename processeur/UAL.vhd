@@ -35,6 +35,7 @@ entity UAL is
     Port ( Ctrl_Alu : in  STD_LOGIC_VECTOR (2 downto 0);
            A : in  STD_LOGIC_VECTOR (7 downto 0);
            B : in  STD_LOGIC_VECTOR (7 downto 0);
+			  CLK : in  STD_LOGIC;
            N : out  STD_LOGIC;
            O : out  STD_LOGIC;
            Z : out  STD_LOGIC;
@@ -56,12 +57,12 @@ begin
 	-- https://moodle-3a.insa-toulouse.fr/mod/forum/discuss.php?d=4636
 	
 	S_aux <=
-		('0' & A) + ('0' & B) when Ctrl_Alu = "000" else
-		('0' & A) - ('0' & B) when Ctrl_Alu = "001" else
-		("00000" & A(3 downto 0)) * ("00000" & B(3 downto 0)) when Ctrl_Alu = "010" else
-		std_logic_vector(unsigned(A) / unsigned(B)) when Ctrl_Alu = "011"; -- "/" n'existe pas dans la librairie unsigned
+	('0' & A) + ('0' & B) when Ctrl_Alu = "000" else
+	('0' & A) - ('0' & B) when Ctrl_Alu = "001" else
+	("00000" & A(3 downto 0)) * ("00000" & B(3 downto 0)) when Ctrl_Alu = "010";-- else
+	--std_logic_vector(unsigned(A) / unsigned(B)) when Ctrl_Alu = "011"; -- "/" n'existe pas dans la librairie unsigned
 	
-	N <= S_aux(7);
+	N <= S_aux(7) when Ctrl_Alu /= "010" else A(3) xor B(3);
 	O <=
 		'1'
 			when (
@@ -74,8 +75,8 @@ begin
 				Ctrl_Alu = "001" --SUB
 			) else
 		'0';
-	Z <= S_aux + "000000000";
-	C <= S_aux(8);
+	Z <= S_aux = "000000000";
+	C <= S_aux(8) when Ctrl_Alu /= "010" else '0';
 	S <= S_aux(7 downto 0);
 		
 end Behavioral;

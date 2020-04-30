@@ -1,0 +1,2 @@
+le pipeline est un composant générique qui renvoie les entrées sur les sorties à chaque front montant d'horloge
+ne pas faire de composants pour les multiplexeurs, utiliser de simples if
