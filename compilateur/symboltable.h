@@ -3,15 +3,18 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define INT_TYPE 1
-#define FLOAT_TYPE 2
-#define CHAR_TYPE 3
 
+#define VARS_TABLE_MAX_SIZE 100
+#define TEMP_VARS_FIRST_ADDR 100
+#define MAX_TEMP_VARS 1000
 
-void icnrementDepth();
+void incrementDepth();
 void decrementDepth();
-int pushSymbol(char * id, int type, bool isConst, bool isInit);
+int pushSymbol(char * id, bool isConst, bool isInit);
 int getSymbolAddr(char * id);
 bool isSymbolInit(int addr);
 void initializeSymbol(int addr);
 bool isSymbolConst(int addr);
+
+int getTempVarAddr();
+void freeTempVarAddr(int tempVarAddr);

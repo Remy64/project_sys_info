@@ -4,10 +4,6 @@
 #include <string.h>
 #include "symboltable.h"
 
-#define MAX_SIZE 100
-#define INT_TYPE 1
-#define FLOAT_TYPE 2
-#define CHAR_TYPE 3
 
 typedef struct {
 	char * id;
@@ -17,9 +13,14 @@ typedef struct {
 } t_symbol;
 
 
-t_symbol symbolTable[MAX_SIZE];
+//symbol table
+t_symbol symbolTable[VARS_TABLE_MAX_SIZE];
 int currentDepth = 0;
 int currentTableSize = 0; //current real size of the table
+
+//temporary variables
+int tempVarsAddr[MAX_TEMP_VARS];
+bool currentTempVarsAddrSize = 0;
 
 
 void incrementDepth() {
@@ -35,7 +36,7 @@ void decrementDepth() {
 }
 
 //called when one wants to declare a variable
-int pushSymbol(char * id, int type, bool isConst, bool isInit) {
+int pushSymbol(char * id, bool isConst, bool isInit) {
 	for(int i=0; i<currentTableSize; i++) {
 		if(strcmp(id, symbolTable[i].id) == 0 && currentDepth == symbolTable[i].depth) {
 			fprintf(stderr, "Fatal Error : Two variables with the same name can not be declared in the same scope");
@@ -75,4 +76,21 @@ void initializeSymbol(int addr) {
 //called when one wants to affect a symbol with a new value to know whether it a constant or not
 bool isSymbolConst(int addr) {
 	return symbolTable[addr].isConst;
+}
+
+//get address for a temporary variable
+int getTempVarAddr() {
+	for(int i=0; i<currentTempVarsAddrSize; i++) {
+		if(tempVarsAddr[i] == false) {
+			tempVarsAddr[i] = true;
+			return TEMP_VARS_FIRST_ADDR + i;
+		}
+	}
+	tempVarsAddr[currentTempVarsAddrSize] = true;
+	return TEMP_VARS_FIRST_ADDR + currentTempVarsAddrSize++;
+}
+
+//free the memory of a temporary variable
+void freeTempVarAddr(int tempVarAddr) {
+	tempVarsAddr[tempVarAddr - TEMP_VARS_FIRST_ADDR] = false;
 }

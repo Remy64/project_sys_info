@@ -11,8 +11,8 @@ compiler:
 	sed -i 's/typedef int YYSTYPE;/typedef union { float x; int i; char * str; char c; } YYSTYPE;/' parser.y.c
 	sed -i 's/typedef int YYSTYPE;/typedef union { float x; int i; char * str; char c; } YYSTYPE;/' parser.y.h
 	gcc -c symboltable.c
-	gcc parser.y.c parser.l.c symboltable.o -ly -ll -o parser
-	rm -f symboltable.o
+	gcc -c instructions.c
+	gcc parser.y.c parser.l.c symboltable.o instructions.o -ly -ll -o parser
 
 # compile a file
 compile:
@@ -37,5 +37,8 @@ interprete:
 		make interpreter;\
 	fi
 	@./interpreter $(file).s
+
+clean:
+	rm -f *.o *.y.h *.y.c *.l.c parser interpreter
 
 # note : @ prevents make from diplaying the command
