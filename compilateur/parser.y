@@ -82,13 +82,27 @@ Instruction:
 	} Instruction
 	| tPRINTF tOB Expression tCB tSC Instruction
 	| tRETURN Expression tSC
-	| tIF tOB Expression tCB Body Else Instruction
+	| tIF tOB Expression tCB {
+		$1.i = currentBufferSize;
+		instruction(JMP, 0, NONE, NONE);
+	} 
+	Body {
+		instructionsBuffer[$1.i].arg1 = currentBufferSize + 2;
+	}Else Instruction
 	| /* epsilon */
 	;
 
 Else:
 	
-	|tELSE Body 
+	|tELSE {
+		$1.i = currentBufferSize;
+		instruction(JMP, 0, NONE, NONE);
+
+	}
+
+	 Body {
+	 	instructionsBuffer[$1.i].arg1 = currentBufferSize + 1;
+	 }
 	;
 
 Type: 
