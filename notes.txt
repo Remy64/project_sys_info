@@ -4,22 +4,22 @@ ne pas faire de composants pour les multiplexeurs, utiliser de simples if
 
 à faire :
 
-- libérer la mémoire des variables temporaires. idée : garder en mémoire la liste des addresses utilisées. Retirer l'élement de cette liste qui correspond à la variable que l'on veut libérer (pas ouf niveau complexité, surtout sans sstructure de données adaptée)
+#- libérer la mémoire des variables temporaires. idée : garder en mémoire la liste des addresses utilisées. Retirer l'élement de cette liste qui correspond à la variable que l'on veut libérer (pas ouf niveau complexité, surtout sans sstructure de données adaptée)
 (facile)
 
-- supprimer float et char, seuls les entiers sont demandés (youpi !)
+#- supprimer float et char, seuls les entiers sont demandés (youpi !)
 (lol)
 
-- ajouter printf avec un paramètre : un entier
+#- ajouter printf avec un paramètre : un entier
 (facile)
 
 - déclaration de plusieurs variables sur la même ligne
 (chiant, mais ça va)
 
-- reconnaissance des entiers sous forme décimale et exponentielle
+#- reconnaissance des entiers sous forme décimale et exponentielle
 (oklm)
 
-- gestion des if
+#- gestion des if
 (moyen / difficile)
 
 - gestion des while

@@ -8,8 +8,8 @@ compiler:
 	mv y.tab.c parser.y.c
 	lex parser.l
 	mv lex.yy.c parser.l.c
-	sed -i 's/typedef int YYSTYPE;/typedef union { float x; int i; char * str; char c; } YYSTYPE;/' parser.y.c
-	sed -i 's/typedef int YYSTYPE;/typedef union { float x; int i; char * str; char c; } YYSTYPE;/' parser.y.h
+	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' parser.y.c
+	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' parser.y.h
 	gcc -c symboltable.c
 	gcc -c instructions.c
 	gcc parser.y.c parser.l.c symboltable.o instructions.o -ly -ll -o parser
@@ -39,6 +39,6 @@ interprete:
 	@./interpreter $(file).s
 
 clean:
-	rm -f *.o *.y.h *.y.c *.l.c parser interpreter
+	rm -f *.o *.y.h *.y.c *.l.c *.s parser interpreter
 
 # note : @ prevents make from diplaying the command

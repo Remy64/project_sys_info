@@ -5,11 +5,9 @@
 #include "instructions.h"
 
 
-typedef struct Instruction {
+typedef struct {
 	Type type;
-	int arg1;
-	int arg2;
-	int arg3;
+	int args[3];
 } Instruction;
 
 
@@ -17,14 +15,62 @@ Instruction instructionsBuffer[NB_MAX_INSTR];
 int currentBufferSize = 0;
 
 
-void instruction(Type type, int arg1, int arg2, int arg3) {
+int instruction(Type type, int arg1, int arg2, int arg3) {
+	switch(type) {
+		case ADD:
+		case SOU:
+		case MUL:
+		case DIV:
+		case INF:
+		case SUP:
+		case EQU:
+		case COP:
+		case AFC:
+		case JMF:
+		case JMP:
+		case PRI:
+			break;
+		default:
+			fprintf(stderr, "Fatal Error : The instruction type you provided is unknown");
+			exit(-1);
+	}
 	instructionsBuffer[currentBufferSize] = (Instruction) {
 		type,
-		arg1,
-		arg2,
-		arg3
+		{arg1, arg2, arg3}
 	};
-	currentBufferSize++;
+	return currentBufferSize++;
+}
+
+int getNbInstructions() {
+	return currentBufferSize;
+}
+
+void amendInstructionArg(int addr, int argNum, int newArg) {
+	if(addr >= currentBufferSize || addr < 0) {
+		fprintf(stderr, "Fatal Error : Impossible to amend instruction. The provided instruction address is incorrect");
+		exit(-1);
+	}
+	if(argNum < 1 || argNum > 3) {
+		fprintf(stderr, "Fatal Error : Invalid argument number. A valid argument number is 1, 2 or 3");
+		exit(-1);
+	}
+	instructionsBuffer[addr].args[argNum-1] = newArg;
+	/*
+	switch(argNum) {
+		case 1:
+			instructionsBuffer[addr].arg1 = newArg;
+			break;
+		case 2:
+			instructionsBuffer[addr].arg2 = newArg;
+			break;
+		case 3:
+			instructionsBuffer[addr].arg3 = newArg;
+			break;
+		default:
+			fprintf(stderr, "Fatal Error : Invalid argument number. A valid argument number is 1, 2 or 3");
+			exit(-1);
+	}
+	*/
 }
 
 void printInstructions() {
@@ -49,7 +95,7 @@ void printInstructions() {
 						strcpy(name, "ADD");
 						break;
 					case SOU:
-						strcpy(name, "SUB");
+						strcpy(name, "SOU");
 						break;
 					case MUL:
 						strcpy(name, "MUL");
@@ -75,9 +121,9 @@ void printInstructions() {
 					maxCopyOnBuffer,
 					"%s\t%d\t%d\t%d\n",
 					name,
-					instructionsBuffer[i].arg1,
-					instructionsBuffer[i].arg2,
-					instructionsBuffer[i].arg3
+					instructionsBuffer[i].args[0],
+					instructionsBuffer[i].args[1],
+					instructionsBuffer[i].args[2]
 				);
 				break;
 			case COP:
@@ -103,8 +149,8 @@ void printInstructions() {
 					maxCopyOnBuffer,
 					"%s\t%d\t%d\n",
 					name,
-					instructionsBuffer[i].arg1,
-					instructionsBuffer[i].arg2
+					instructionsBuffer[i].args[0],
+					instructionsBuffer[i].args[1]
 				);
 				break;
 			case JMP:
@@ -126,7 +172,7 @@ void printInstructions() {
 					maxCopyOnBuffer,
 					"%s\t%d\n",
 					name,
-					instructionsBuffer[i].arg1
+					instructionsBuffer[i].args[0]
 				);
 				break;
 			default:				

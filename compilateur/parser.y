@@ -32,12 +32,13 @@ int tempAddrPointer = 100;
 %token tOC tCC
 %token tOH tCH
 
-%token tINT tVOID tCHAR tFLOAT
-%token tSPACE tTAB tNL tBS
+%token tINT tVOID
+%token tSPACE tTAB tNL tBS tCOMMA
 %token tSC
 %token tPRINTF
 %token tMAIN
-%token tIF tELSE
+%token tIF tWHILE tDO
+%token tELSE
 
 %token tCONST
 %token tNAME
@@ -61,10 +62,12 @@ Instruction:
 	  Type tNAME tAFF Expression tSC {
 		int varAddr = pushSymbol($2.str, false, true);
 		instruction(COP, varAddr, $4.i, NONE);
+		freeTempVarAddr($4.i);
 	} Instruction
-	| Type tCONST tNAME tAFF Expression tSC {
+	| tCONST Type tNAME tAFF Expression tSC {
 		int varAddr = pushSymbol($3.str, true, true);
 		instruction(COP, varAddr, $5.i, NONE);
+		freeTempVarAddr($5.i);
 	} Instruction
 	| Type tNAME tSC {
 		pushSymbol($2.str, false, false);
@@ -79,37 +82,75 @@ Instruction:
 			initializeSymbol(varAddr);
 		}
 		instruction(COP, varAddr, $3.i, NONE);
+		freeTempVarAddr($3.i);
 	} Instruction
-	| tPRINTF tOB Expression tCB tSC Instruction
-	| tRETURN Expression tSC
+	| tPRINTF tOB Expression tCB tSC {
+		instruction(PRI, $3.i, NONE, NONE);
+                freeTempVarAddr($3.i);
+	} Instruction
 	| tIF tOB Expression tCB {
-		$1.i = currentBufferSize;
-		instruction(JMP, 0, NONE, NONE);
-	} 
-	Body {
-		instructionsBuffer[$1.i].arg1 = currentBufferSize + 2;
-	}Else Instruction
-	| /* epsilon */
-	;
+		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		$1.i = instruction(JMF, $3.i, TEMP, NONE);
+		freeTempVarAddr($3.i);
+	} Body {
+		amendInstructionArg($1.i, 2, getNbInstructions() + 1);
+		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+	} tELSE {
+		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		$1.i = instruction(JMP, TEMP, NONE, NONE);
 
-Else:
-	
-	|tELSE {
-		$1.i = currentBufferSize;
-		instruction(JMP, 0, NONE, NONE);
-
+	} Body {
+		amendInstructionArg($1.i, 1, getNbInstructions());
+		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+	} Instruction
+	| tIF tOB Expression tCB {
+		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		$1.i = instruction(JMF, $3.i, TEMP, NONE);
+		freeTempVarAddr($3.i);
+	} Body {
+		amendInstructionArg($1.i, 2, getNbInstructions());
+		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+	} Instruction
+	| tWHILE {
+		$1.i = getNbInstructions();
+	} tOB Expression tCB {
+		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		$2.i = instruction(JMF, $4.i, TEMP, NONE);
+		freeTempVarAddr($4.i);
+		// it should be the line below since $3 is Expression, not $4, but the value of Expresson is in $4
+		// $2.i = instruction(JMF, $3.i, TEMP, NONE);
+		// freeTempVarAddr($3.i);
+	} Body {
+		instruction(JMP, $1.i, NONE, NONE);
+		amendInstructionArg($2.i, 2, getNbInstructions());
+		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+	} Instruction
+	| tDO {
+		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		$1.i = getNbInstructions();
+	} Body tWHILE tOB Expression tCB tSC {
+		int addrForZero = getTempVarAddr();
+		instruction(AFC, addrForZero, 0, NONE);
+		instruction(EQU, $6.i, addrForZero, $6.i);
+		freeTempVarAddr(addrForZero);
+		instruction(JMF, $6.i, $1.i, NONE);
+		freeTempVarAddr($6.i);
+		// it should be the lines below since $5 is Expression, not $6, but the value of Expresson is in $6
+		// instruction(EQU, $5.i, addrForZero, $5.i);
+		// freeTempVarAddr(addrForZero);
+		// instruction(JMF, $5.i, $1.i, NONE);
+		// freeTempVarAddr($5.i);
+		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+	} Instruction
+	| tRETURN Expression tSC {
+		//"return <expression>;" acts like "printf(<expression>);"
+		instruction(PRI, $2.i, NONE, NONE);
 	}
-
-	 Body {
-	 	instructionsBuffer[$1.i].arg1 = currentBufferSize + 1;
-	 }
+	| /* epsilon */
 	;
 
 Type: 
 	  tINT
-	| tFLOAT
-	| tVOID
-	| tCHAR
 	;
 
 Expression:
@@ -142,10 +183,12 @@ Expression:
 		freeTempVarAddr($3.i);
 	}
 	| Expression tDIF Expression {
-		//DIF = EQU
 		$$.i = $1.i;
 		instruction(EQU, $$.i, $1.i, $3.i);
-		freeTempVarAddr($3.i);
+		int addrForZero = $3.i;
+		instruction(AFC, addrForZero, 0, NONE);
+		instruction(EQU, $$.i, addrForZero, $$.i);
+		freeTempVarAddr(addrForZero);
 	}
 	| Expression tSINF Expression {
 		$$.i = $1.i;
@@ -159,23 +202,33 @@ Expression:
 	}
 	| Expression tINF Expression {
 		$$.i = $1.i;
-		instruction(INF, $$.i, $1.i, $3.i);
-		freeTempVarAddr($3.i);
+		instruction(SUP, $$.i, $1.i, $3.i);
+		int addrForOne = $3.i;
+		instruction(AFC, addrForOne, 1, NONE);
+		instruction(SOU, $$.i, addrForOne, $$.i);
+		freeTempVarAddr(addrForOne);
 	}
 	| Expression tSUP Expression {
 		$$.i = $1.i;
-		instruction(SUP, $$.i, $1.i, $3.i);
-		freeTempVarAddr($3.i);
+		instruction(INF, $$.i, $1.i, $3.i);
+		int addrForOne = $3.i;
+		instruction(AFC, addrForOne, 1, NONE);
+		instruction(SOU, $$.i, addrForOne, $$.i);
+		freeTempVarAddr(addrForOne);
 	}
 	| tNOT Expression {
-		//le not n'existe pas
+		int addrForZero = getTempVarAddr();
+		instruction(AFC, addrForZero, 0, NONE);
 		$$.i = $2.i;
+		instruction(EQU, $$.i, addrForZero, $2.i);
+		freeTempVarAddr(addrForZero);
 	}
 	| tMINUS Expression {
-		$$.i = getTempVarAddr();
-		instruction(AFC, $$.i, 0, NONE);
-		instruction(SOU, $$.i, $$.i, $2.i);
-		freeTempVarAddr($2.i);
+		int addrForZero = getTempVarAddr();
+		instruction(AFC, addrForZero, 0, NONE);
+		$$.i = $2.i;
+		instruction(SOU, $$.i, addrForZero, $2.i);
+		freeTempVarAddr(addrForZero);
 	}            %prec tNOT
 	| Valeur {
 		$$.i = getTempVarAddr();
@@ -194,8 +247,6 @@ Expression:
 
 Valeur:
 	  tINT_VAL
-	| tFLOAT_VAL
-	| tCHAR_VAL
 	;
 
 %%

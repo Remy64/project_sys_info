@@ -19,8 +19,8 @@ int currentDepth = 0;
 int currentTableSize = 0; //current real size of the table
 
 //temporary variables
-int tempVarsAddr[MAX_TEMP_VARS];
-bool currentTempVarsAddrSize = 0;
+bool tempVarsAddr[MAX_TEMP_VARS];
+int currentTempVarsAddrSize = 0;
 
 
 void incrementDepth() {
