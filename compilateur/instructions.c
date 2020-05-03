@@ -31,7 +31,7 @@ int instruction(Type type, int arg1, int arg2, int arg3) {
 		case PRI:
 			break;
 		default:
-			fprintf(stderr, "Fatal Error : The instruction type you provided is unknown");
+			fprintf(stderr, "Fatal Error : The instruction type you provided is unknown\n");
 			exit(-1);
 	}
 	instructionsBuffer[currentBufferSize] = (Instruction) {
@@ -47,11 +47,11 @@ int getNbInstructions() {
 
 void amendInstructionArg(int addr, int argNum, int newArg) {
 	if(addr >= currentBufferSize || addr < 0) {
-		fprintf(stderr, "Fatal Error : Impossible to amend instruction. The provided instruction address is incorrect");
+		fprintf(stderr, "Fatal Error : Impossible to amend instruction. The provided instruction address is incorrect\n");
 		exit(-1);
 	}
 	if(argNum < 1 || argNum > 3) {
-		fprintf(stderr, "Fatal Error : Invalid argument number. A valid argument number is 1, 2 or 3");
+		fprintf(stderr, "Fatal Error : Invalid argument number. A valid argument number is 1, 2 or 3\n");
 		exit(-1);
 	}
 	instructionsBuffer[addr].args[argNum-1] = newArg;

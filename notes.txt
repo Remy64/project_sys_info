@@ -6,5 +6,4 @@ ne pas faire de composants pour les multiplexeurs, utiliser de simples if
 
 à faire :
 
-- gérer le if seul (conflit réduction / réduction)
 - gérer la déclaration de plusieurs variables sur la même ligne

@@ -89,29 +89,36 @@ Instruction:
                 freeTempVarAddr($3.i);
 	} Instruction
 	| tIF tOB Expression tCB {
-		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		incrementDepth();
 		$1.i = instruction(JMF, $3.i, TEMP, NONE);
 		freeTempVarAddr($3.i);
 	} Body {
-		amendInstructionArg($1.i, 2, getNbInstructions() + 1);
-		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	} Else Instruction
+		$6.i = getNbInstructions(); // first free instruction address
+		decrementDepth();
+	} Else {
+		// the boolean indicator is in $8, not $6 because {} counts as a symbol
+		if($8.i) {
+			// if - else
+			amendInstructionArg($1.i, 2, $6.i + 1);
+		} else {
+			// if alone
+			amendInstructionArg($1.i, 2, $6.i);
+		}
+	} Instruction
 	| tWHILE {
 		$1.i = getNbInstructions();
 	} tOB Expression tCB {
-		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		incrementDepth();
 		$2.i = instruction(JMF, $4.i, TEMP, NONE);
 		freeTempVarAddr($4.i);
-		// it should be the line below since $3 is Expression, not $4, but the value of Expresson is in $4
-		// $2.i = instruction(JMF, $3.i, TEMP, NONE);
-		// freeTempVarAddr($3.i);
+		// Expression is in $4, not $3 because {} counts as a symbol
 	} Body {
 		instruction(JMP, $1.i, NONE, NONE);
 		amendInstructionArg($2.i, 2, getNbInstructions());
-		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		decrementDepth();
 	} Instruction
 	| tDO {
-		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		incrementDepth();
 		$1.i = getNbInstructions();
 	} Body tWHILE tOB Expression tCB tSC {
 		int addrForZero = getTempVarAddr();
@@ -120,15 +127,11 @@ Instruction:
 		freeTempVarAddr(addrForZero);
 		instruction(JMF, $6.i, $1.i, NONE);
 		freeTempVarAddr($6.i);
-		// it should be the lines below since $5 is Expression, not $6, but the value of Expresson is in $6
-		// instruction(EQU, $5.i, addrForZero, $5.i);
-		// freeTempVarAddr(addrForZero);
-		// instruction(JMF, $5.i, $1.i, NONE);
-		// freeTempVarAddr($5.i);
-		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		// Expression is in $6, not $5 because {} counts as a symbol
+		decrementDepth();
 	} Instruction
 	| tRETURN Expression tSC {
-		//"return <expression>;" acts like "printf(<expression>);"
+		// "return <expression>;" acts like "printf(<expression>);"
 		instruction(PRI, $2.i, NONE, NONE);
 	}
 	| /* epsilon */
@@ -140,14 +143,16 @@ Type:
 
 Else: 
 	tELSE {
-		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		incrementDepth();
 		$1.i = instruction(JMP, TEMP, NONE, NONE);
-
 	} Body {
 		amendInstructionArg($1.i, 1, getNbInstructions());
-		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		decrementDepth();
+		$$.i = 1; // indicate there is an "else"
 	}
-	|
+	| /* epsilon */ {
+		$$.i = 0; // indicate there is no "else"
+	}
 	;
 Expression:
 	  tOB Expression tCB {

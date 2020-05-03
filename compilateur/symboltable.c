@@ -39,7 +39,7 @@ void decrementDepth() {
 int pushSymbol(char * id, bool isConst, bool isInit) {
 	for(int i=0; i<currentTableSize; i++) {
 		if(strcmp(id, symbolTable[i].id) == 0 && currentDepth == symbolTable[i].depth) {
-			fprintf(stderr, "Fatal Error : Two variables with the same name can not be declared in the same scope");
+			fprintf(stderr, "Fatal Error : Two variables with the same name can not be declared in the same scope\n");
 			exit(-1);
 		}
 	}
@@ -57,7 +57,7 @@ int getSymbolAddr(char * id) {
 	int i;
 	for(i=currentTableSize-1; i>=0 && strcmp(id, symbolTable[i].id) != 0; i--);
 	if(i < 0) {
-		fprintf(stderr, "Fatal Error : no symbol \"%s\" found in the table", id);
+		fprintf(stderr, "Fatal Error : no symbol \"%s\" found in the table\n", id);
 		exit(-1);
 	}
 	return i;
