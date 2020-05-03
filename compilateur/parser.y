@@ -95,22 +95,7 @@ Instruction:
 	} Body {
 		amendInstructionArg($1.i, 2, getNbInstructions() + 1);
 		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	} tELSE {
-		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-		$1.i = instruction(JMP, TEMP, NONE, NONE);
-
-	} Body {
-		amendInstructionArg($1.i, 1, getNbInstructions());
-		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	} Instruction
-	| tIF tOB Expression tCB {
-		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-		$1.i = instruction(JMF, $3.i, TEMP, NONE);
-		freeTempVarAddr($3.i);
-	} Body {
-		amendInstructionArg($1.i, 2, getNbInstructions());
-		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
-	} Instruction
+	} Else Instruction
 	| tWHILE {
 		$1.i = getNbInstructions();
 	} tOB Expression tCB {
@@ -153,6 +138,17 @@ Type:
 	  tINT
 	;
 
+Else: 
+	tELSE {
+		incrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+		$1.i = instruction(JMP, TEMP, NONE, NONE);
+
+	} Body {
+		amendInstructionArg($1.i, 1, getNbInstructions());
+		decrementDepth(); // ADDEDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+	}
+	|
+	;
 Expression:
 	  tOB Expression tCB {
 		$$.i = $2.i;
