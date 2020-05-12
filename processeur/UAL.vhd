@@ -59,7 +59,7 @@ begin
 	S_aux <=
 	('0' & A) + ('0' & B) when Ctrl_Alu = "000" else
 	('0' & A) - ('0' & B) when Ctrl_Alu = "001" else
-	("00000" & A(3 downto 0)) * ("00000" & B(3 downto 0)) when Ctrl_Alu = "010";-- else
+	'0' & (A(3 downto 0) * B(3 downto 0)) when Ctrl_Alu = "010";-- else
 	--std_logic_vector(unsigned(A) / unsigned(B)) when Ctrl_Alu = "011"; -- "/" n'existe pas dans la librairie unsigned
 	
 	N <= S_aux(7) when Ctrl_Alu /= "010" else A(3) xor B(3);
