@@ -19,7 +19,7 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
+USE IEEE.NUMERIC_STD.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 -- Uncomment the following library declaration if using
@@ -49,6 +49,10 @@ type registerTable is array (3 downto 0) of STD_LOGIC_VECTOR (7 downto 0);
 signal registers : registerTable;
 
 begin
+	
+	QA <= registers(to_integer(unsigned(tW))) when W = '1' and tW = tA else registers(to_integer(unsigned(tA)));
+	QB <= registers(to_integer(unsigned(tW))) when W = '1' and tW = tB else registers(to_integer(unsigned(tB)));
+
 	process
 	begin
 	wait until CLK'event and CLK = '1';
