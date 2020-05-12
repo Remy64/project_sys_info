@@ -1,7 +1,8 @@
 %{
 
 #include <stdlib.h>
-#include "parser.y.h"
+#include <string.h>
+#include "parser.h"
 
 %}
 

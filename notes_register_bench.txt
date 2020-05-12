@@ -1,0 +1,13 @@
+Qa <= banc de registre adresse de  W W=1
+
+
+banc de registre :
+
+@A : lecture, mise dans QA
+@B : lecture, mise dans QB
+@W : adresse de l'endroit où on écrit si W = '1'
+W : indique que l'on veut faire une écriture
+
+QA <= reg(@W) when W='1' and @A = @W else reg(@A)
+
+memoire de données : front descendant

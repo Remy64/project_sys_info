@@ -124,7 +124,6 @@ int interpreteInstruction(Instruction instr) {
             break;
         case JMP:
             return instr.args[0];
-            break;
         case PRI:
             printf("Print : \"%d\"\n", vars[instr.args[0]]);
     }
@@ -134,14 +133,14 @@ int interpreteInstruction(Instruction instr) {
 int main(int argc, char * argv[]) {
     if(argc != 2) {
         fprintf(stderr, "Fatal Error : You have to provide exactly one argument : the name of the assembly file you want to interprete\n");
-        exit(-1);
+        return -1;
     }
 
     //file opening
     FILE * asmFile = fopen(argv[1], "r");
     if(asmFile == NULL) {
         fprintf(stderr, "Fatal Error : could not open the file given as a parameter\n");
-        exit(-1);
+        return -1;
     }
 
     int nbLinesMax = 50;
@@ -193,7 +192,7 @@ int main(int argc, char * argv[]) {
                     instructions[nbLines].type = PRI;
                 } else {
                     fprintf(stderr, "Fatal Error : \"%s\" is an unknown instruction\n", iter);
-                    exit(-1);
+                    return -1;
 		}
             } else {
                 instructions[nbLines].args[i-1] = (int) strtol(iter, (char **) NULL, 10);
@@ -213,7 +212,7 @@ int main(int argc, char * argv[]) {
         } else {
             if(ret >= nbLines || ret < 0) {
                 fprintf(stderr, "Fatal Error : jump to hyperspace (instruction address out of bounds) : \"%d\"\n", ret);
-                exit(-1);
+                return -1;
             }
             i = ret;
         }

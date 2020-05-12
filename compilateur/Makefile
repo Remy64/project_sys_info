@@ -4,15 +4,16 @@ all: compiler
 # build the compiler
 compiler:
 	yacc -d parser.y
-	mv y.tab.h parser.y.h
+	mv y.tab.h parser.h
 	mv y.tab.c parser.y.c
 	lex parser.l
 	mv lex.yy.c parser.l.c
 	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' parser.y.c
-	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' parser.y.h
-	gcc -c symboltable.c
-	gcc -c instructions.c
+	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' parser.h
+	gcc -c symboltable.c instructions.c
 	gcc parser.y.c parser.l.c symboltable.o instructions.o -ly -ll -o parser
+	@#rm -f symboltable.o instructions.o
+	rm -f symboltable.o instructions.o parser.h *.l.c *.y.c
 
 # compile a file
 compile:
@@ -39,6 +40,7 @@ interprete:
 	@./interpreter $(file).s
 
 clean:
-	rm -f *.o *.y.h *.y.c *.l.c *.s parser interpreter
+	@#rm -f *.l.c *.y.c *.s parser.h parser interpreter
+	rm -f *.s parser interpreter
 
 # note : @ prevents make from diplaying the command

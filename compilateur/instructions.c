@@ -55,22 +55,6 @@ void amendInstructionArg(int addr, int argNum, int newArg) {
 		exit(-1);
 	}
 	instructionsBuffer[addr].args[argNum-1] = newArg;
-	/*
-	switch(argNum) {
-		case 1:
-			instructionsBuffer[addr].arg1 = newArg;
-			break;
-		case 2:
-			instructionsBuffer[addr].arg2 = newArg;
-			break;
-		case 3:
-			instructionsBuffer[addr].arg3 = newArg;
-			break;
-		default:
-			fprintf(stderr, "Fatal Error : Invalid argument number. A valid argument number is 1, 2 or 3");
-			exit(-1);
-	}
-	*/
 }
 
 void printInstructions() {
