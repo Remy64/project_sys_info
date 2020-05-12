@@ -11,3 +11,7 @@ W : indique que l'on veut faire une écriture
 QA <= reg(@W) when W='1' and @A = @W else reg(@A)
 
 memoire de données : front descendant
+
+
+entrées processeur : CLK RST
+sorties processeur : sorties banc de registres
