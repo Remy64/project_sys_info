@@ -75,7 +75,7 @@ begin
 				Ctrl_Alu = "001" --SUB
 			) else
 		'0';
-	Z <= S_aux = "000000000";
+	Z <= '1' when S_aux = "000000000" else '0';
 	C <= S_aux(8) when Ctrl_Alu /= "010" else '0';
 	S <= S_aux(7 downto 0);
 		
