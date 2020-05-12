@@ -45,7 +45,7 @@ end registerBench;
 
 architecture Behavioral of registerBench is
 
-type registerTable is array (3 downto 0) of STD_LOGIC_VECTOR (7 downto 0);
+type registerTable is array (15 downto 0) of STD_LOGIC_VECTOR (7 downto 0);
 signal registers : registerTable;
 
 begin
