@@ -41,8 +41,8 @@ architecture Behavioral of instr_mem is
 
 type MEMORY_TYPE is array(0 to 31) of STD_LOGIC_VECTOR(31 downto 0);
 constant memory : MEMORY_TYPE := (
-    "10000000000000001000000000000000",
-	 "10000000000000001000000000000000",
+    X"06050F00", -- AFC R5 15
+	 X"05010500", -- COP R1 R5
 	 "10000000000000001000000000000000",
 	 "10000000000000001000000000000000",
 	 "10000000000000001000000000000000",
@@ -82,4 +82,3 @@ begin
 		  OUT_DATA <= memory(to_integer(unsigned(ADDR)));
     end process;
 end Behavioral;
-

@@ -41,7 +41,7 @@ entity data_mem is
 end data_mem;
 
 architecture Behavioral of data_mem is
-    
+
 type MEMORY_TYPE is array(0 to 31) of STD_LOGIC_VECTOR(7 downto 0);
 signal memory : MEMORY_TYPE := (others=>(others=>'0'));
 
@@ -59,4 +59,3 @@ begin
     end process;
 
 end Behavioral;
-
