@@ -145,9 +145,9 @@ begin
                                     C_DI);
 
     -- banc de registres
-    register_bench_comp : registerBench PORT MAP(B_DI, --@A
-                                                 C_DI, --@B
-                                                 A_RE, --@W
+    register_bench_comp : registerBench PORT MAP(B_DI(3 downto 0), --@A
+                                                 C_DI(3 downto 0), --@B
+                                                 A_RE(3 downto 0), --@W
                                                  W,
                                                  B_RE, --DATA
                                                  RST,
