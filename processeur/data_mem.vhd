@@ -46,16 +46,16 @@ type MEMORY_TYPE is array(0 to 31) of STD_LOGIC_VECTOR(7 downto 0);
 signal memory : MEMORY_TYPE := (others=>(others=>'0'));
 
 begin
-	 memory <= (others=>(others=>'0')) when RST = '1';
+    memory <= (others=>(others=>'0')) when RST = '1';
 
     process
-	 begin
+    begin
         wait until CLK'EVENT and CLK='1';
-		  if RW = '1' then
-		      OUT_DATA <= memory(to_integer(unsigned(ADDR)));
-		  else
+        if RW = '0' then
+            OUT_DATA <= memory(to_integer(unsigned(ADDR)));
+        else
             memory(to_integer(unsigned(ADDR))) <= IN_DATA;
-		  end if;
+        end if;
     end process;
 
 end Behavioral;
