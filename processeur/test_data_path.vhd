@@ -42,14 +42,21 @@ ARCHITECTURE behavior OF test_data_path IS
     COMPONENT data_path
     PORT(
          RST : IN  std_logic;
-         CLK : IN  std_logic
-        );
+         CLK : IN  std_logic;
+         ADDR_W_OUT : OUT std_logic_vector (3 downto 0);
+			W_OUT : OUT std_logic;
+			DATA_OUT : OUT std_logic_vector (7 downto 0));
     END COMPONENT;
     
 
    --Inputs
-   signal RST : std_logic := '0';
+   signal RST : std_logic := '1';
    signal CLK : std_logic := '0';
+	
+	--Outputs
+   signal ADDR_W_OUT : std_logic_vector (3 downto 0);
+   signal W_OUT : std_logic;
+   signal DATA_OUT : std_logic_vector (7 downto 0);
 
    -- Clock period definitions
    constant CLK_period : time := 10 ns;
@@ -59,7 +66,10 @@ BEGIN
 	-- Instantiate the Unit Under Test (UUT)
    uut: data_path PORT MAP (
           RST => RST,
-          CLK => CLK
+          CLK => CLK,
+          ADDR_W_OUT => ADDR_W_OUT,
+			 W_OUT => W_OUT,
+			 DATA_OUT => DATA_OUT
         );
 
    -- Clock process definitions
@@ -69,20 +79,6 @@ BEGIN
 		wait for CLK_period/2;
 		CLK <= '1';
 		wait for CLK_period/2;
-   end process;
- 
-
-   -- Stimulus process
-   stim_proc: process
-   begin		
-      -- hold reset state for 100 ns.
-      wait for 100 ns;	
-
-      wait for CLK_period*10;
-
-      -- insert stimulus here 
-
-      wait;
    end process;
 	
 	RST <= '1' after 100 ns;

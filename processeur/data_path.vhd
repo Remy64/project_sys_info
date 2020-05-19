@@ -33,7 +33,10 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity data_path is
     port ( RST : in STD_LOGIC;
-           CLK : in STD_LOGIC);
+           CLK : in STD_LOGIC;
+           ADDR_W_OUT : out STD_LOGIC_VECTOR (3 downto 0);
+			  W_OUT : out STD_LOGIC;
+			  DATA_OUT : out STD_LOGIC_VECTOR (7 downto 0));
 end data_path;
 
 architecture Behavioral of data_path is
@@ -42,7 +45,7 @@ architecture Behavioral of data_path is
               ADDR : in  STD_LOGIC_VECTOR (7 downto 0);
               OUT_DATA : out  STD_LOGIC_VECTOR (31 downto 0));
     end component;
-	 
+
     component pipe is
         port (CLK : in STD_LOGIC;
               OP_IN : in  STD_LOGIC_VECTOR (7 downto 0);
@@ -66,7 +69,7 @@ architecture Behavioral of data_path is
               QA : out  STD_LOGIC_VECTOR (7 downto 0);
               QB : out  STD_LOGIC_VECTOR (7 downto 0));
     end component;
-	 
+
     component UAL is
         port (Ctrl_Alu : in  STD_LOGIC_VECTOR (2 downto 0);
               A : in  STD_LOGIC_VECTOR (7 downto 0);
@@ -78,7 +81,7 @@ architecture Behavioral of data_path is
               C : out  STD_LOGIC;
               S : out  STD_LOGIC_VECTOR (7 downto 0));
     end component;
-	 
+
     component data_mem is
         port (ADDR : in  STD_LOGIC_VECTOR (7 downto 0);
               IN_DATA : in  STD_LOGIC_VECTOR (7 downto 0);
@@ -87,7 +90,7 @@ architecture Behavioral of data_path is
               CLK : in  STD_LOGIC;
               OUT_DATA : out  STD_LOGIC_VECTOR (7 downto 0));
     end component;
-	 
+
     signal IP : STD_LOGIC_VECTOR (7 downto 0) := "00000000"; -- read first instruction first
     signal next_IP : STD_LOGIC_VECTOR (7 downto 0);
     signal INSTR_DATA : STD_LOGIC_VECTOR (31 downto 0);
@@ -118,7 +121,7 @@ architecture Behavioral of data_path is
     signal S : STD_LOGIC_VECTOR (7 downto 0);
     signal ADDR_DATA_MEM_MUX : STD_LOGIC_VECTOR (7 downto 0);
 	 signal MEM_DATA_OUT : STD_LOGIC_VECTOR (7 downto 0);
-	 
+
 begin
     -- incrementation du pointeur d'instruction sur front montant
     process
@@ -127,7 +130,7 @@ begin
         next_IP <= std_logic_vector(unsigned(IP) + 1);
     end process;
     IP <= next_IP;
-	 
+
     -- memoire d'instructions
     instr_mem_comp : instr_mem PORT MAP(CLK,
                                         IP,
@@ -168,12 +171,12 @@ begin
                                     A_EX,
                                     B_EX,
                                     C_EX);
-							  
+
     -- LC pipe EX
     Ctrl_Alu <= "000" when OP_EX = X"01" else
                 "001" when OP_EX = X"03" else
                 "010"; -- on mappe les codes des instructions sur les codes des opérations de l'UAL
-											
+
     -- unité arithmético-logique
     ual_comp : UAL PORT MAP(Ctrl_Alu,
                             B_EX, --A
@@ -184,7 +187,7 @@ begin
                             OPEN,
                             OPEN,
                             S);
-								
+
     -- MUX pipe EX
     B_EX_MUX <= S when OP_DI = X"01" or
                        OP_DI = X"03" or
@@ -200,7 +203,7 @@ begin
                                      A_MEM,
                                      B_MEM,
                                      C_MEM);
-												
+
     RW <= '1' when OP_MEM = X"08" else '0'; -- écriture pour "STORE", lecture pour "LOAD"
 
     ADDR_DATA_MEM_MUX <= A_MEM when OP_MEM = X"08" else B_MEM; -- pour "STORE", A contient l'adresse d'écriture en mémoire, pour "LOAD", B contient l'adresse de lecture
@@ -211,9 +214,9 @@ begin
                                       RST,
                                       CLK,
                                       MEM_DATA_OUT);
-												  
+
     B_MEM_MUX <= B_MEM when OP_MEM /= X"07" else MEM_DATA_OUT; -- pour "LOAD", on renvoie les données lues dans la mémoire sur B
-												 
+
     -- interface mémoire / écriture des registres
     mem_re_interface : pipe PORT MAP(CLK,
                                      OP_MEM,
@@ -227,5 +230,10 @@ begin
 
     -- LC pipe RE
     W <= '1' when OP_RE /= X"08" else '0'; -- on ecrit dans un registre pour toutes les instructions sauf "STORE"
+
+    -- sorties
+    ADDR_W_OUT <= A_RE(3 downto 0);
+    W_OUT <= W;
+    DATA_OUT <= B_RE;
 
 end Behavioral;
