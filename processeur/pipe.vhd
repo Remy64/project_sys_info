@@ -47,11 +47,11 @@ begin
 
 process
 begin
-	wait until CLK'EVENT and CLK = '1';
-	OP_OUT <= OP_IN;
-	A_OUT <= A_IN;
-	B_OUT <= B_IN;
-	C_OUT <= C_IN;
+    wait until CLK'EVENT and CLK = '1';
+    OP_OUT <= OP_IN;
+    A_OUT <= A_IN;
+    B_OUT <= B_IN;
+    C_OUT <= C_IN;
 end process;
 
 end Behavioral;

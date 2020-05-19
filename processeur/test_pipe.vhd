@@ -94,8 +94,8 @@ BEGIN
 		wait for CLK_period/2;
    end process;
  
-	OP_IN <= X"02", X"03" after 102 ns, X"04" after 202 ns, X"05" after 302 ns;
-	A_IN <= X"01", X"02" after 102 ns, X"03" after 202 ns;
+   OP_IN <= X"02", X"03" after 102 ns, X"04" after 202 ns, X"05" after 302 ns;
+   A_IN <= X"01", X"02" after 102 ns, X"03" after 202 ns;
 	B_IN <= X"00", X"01" after 102 ns;
 
 END;

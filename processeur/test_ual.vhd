@@ -105,10 +105,10 @@ BEGIN
 
       -- insert stimulus here 
 		
-		A <= "00001000" after 100 ns;
-		B <= "00000100" after 150 ns;
-		Ctrl_Alu <= "001" after 200 ns;
-		Ctrl_Alu <= "010" after 250 ns;
+      A <= "00001000" after 100 ns;
+      B <= "00000100" after 150 ns;
+      Ctrl_Alu <= "001" after 200 ns;
+      Ctrl_Alu <= "010" after 250 ns;
 		
 		
 

@@ -70,10 +70,10 @@ BEGIN
    -- Clock process definitions
    CLK_process :process
    begin
-		CLK <= '0';
-		wait for CLK_period/2;
-		CLK <= '1';
-		wait for CLK_period/2;
+      CLK <= '0';
+      wait for CLK_period/2;
+      CLK <= '1';
+      wait for CLK_period/2;
    end process;
 
 	ADDR <= X"00" after 100 ns, X"01" after 200 ns, X"02" after 300 ns;

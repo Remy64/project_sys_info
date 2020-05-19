@@ -86,8 +86,8 @@ BEGIN
    end process;
 
    ADDR <= X"02";
-	IN_DATA <= X"0F";
-	RW <= '1' after 100 ns, '0' after 200 ns;
+   IN_DATA <= X"0F";
+   RW <= '1' after 100 ns, '0' after 200 ns;
 	RST <= '1' after 300 ns;
 
 END;
