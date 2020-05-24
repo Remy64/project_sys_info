@@ -168,5 +168,6 @@ void printInstructions() {
 
 	FILE * outputFile = fopen("output.s", "w");
 	fprintf(outputFile, instructionsStrBuffer);
+	fclose(outputFile);
 }
 

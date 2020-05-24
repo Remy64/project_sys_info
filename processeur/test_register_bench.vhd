@@ -60,7 +60,7 @@ ARCHITECTURE behavior OF test_registerBench IS
    signal tW : std_logic_vector(3 downto 0) := (others => '0');
    signal W : std_logic := '0';
    signal DATA : std_logic_vector(7 downto 0) := (others => '0');
-   signal RST : std_logic := '0';
+   signal RST : std_logic := '1';
    signal CLK : std_logic := '0';
 
  	--Outputs
@@ -105,16 +105,11 @@ BEGIN
 
       -- insert stimulus here 
 		
-		RST <= '1' after  150 ns, '0' after 180 ns;
-		
+		RST <= '0' after  150 ns, '1' after 180 ns;
 		W <= '1' after 200 ns, '0' after 450 ns;
-		
 		tW <= "1100" after 250 ns, "0100" after 350 ns;
-		
 		DATA <= "10101000" after 300 ns, "00001111" after 400 ns;
-		
 		tA <= "1100" after 500 ns;
-		
 		tB <= "0100" after 550 ns;
 
       wait;

@@ -55,7 +55,7 @@ ARCHITECTURE behavior OF test_data_mem IS
    signal ADDR : std_logic_vector(7 downto 0) := (others => '0');
    signal IN_DATA : std_logic_vector(7 downto 0) := (others => '0');
    signal RW : std_logic := '0';
-   signal RST : std_logic := '0';
+   signal RST : std_logic := '1';
    signal CLK : std_logic := '0';
 
  	--Outputs
@@ -88,6 +88,6 @@ BEGIN
    ADDR <= X"02";
    IN_DATA <= X"0F";
    RW <= '1' after 100 ns, '0' after 200 ns;
-	RST <= '1' after 300 ns;
+	RST <= '0' after 300 ns;
 
 END;

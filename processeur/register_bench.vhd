@@ -50,21 +50,19 @@ signal registers : registerTable := (others=>(others=>'0'));
 
 begin
 	
-QA <= registers(to_integer(unsigned(tW))) when W = '1' and tW = tA else registers(to_integer(unsigned(tA)));
-QB <= registers(to_integer(unsigned(tW))) when W = '1' and tW = tB else registers(to_integer(unsigned(tB)));
+   QA <= registers(to_integer(unsigned(tW))) when W = '1' and tW = tA else registers(to_integer(unsigned(tA)));
+   QB <= registers(to_integer(unsigned(tW))) when W = '1' and tW = tB else registers(to_integer(unsigned(tB)));
 
-	process
-	begin
-	wait until CLK'event and CLK = '1';
-	if RST = '0' then
-		QA <= "00000000";
-		QB <= "00000000";
-	else
-		if W = '1' then
-			registers(to_integer(unsigned(tW))) <= DATA;
-		end if;
-
-	end if;
-	end process;
+   process
+   begin
+      wait until CLK'event and CLK = '1';
+      if RST = '0' then
+         registers <= (others=>(others=>'0'));
+      else
+         if W = '1' then
+            registers(to_integer(unsigned(tW))) <= DATA;
+         end if;
+      end if;
+   end process;
 end Behavioral;
 			

@@ -45,7 +45,38 @@ ARCHITECTURE behavior OF test_data_path IS
          CLK : IN  std_logic;
          ADDR_W_OUT : OUT std_logic_vector (3 downto 0);
 			W_OUT : OUT std_logic;
-			DATA_OUT : OUT std_logic_vector (7 downto 0));
+			DATA_OUT : OUT std_logic_vector (7 downto 0);
+			
+         IP_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         next_IP_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         INSTR_DATA_OUT : OUT STD_LOGIC_VECTOR (31 downto 0);
+         OP_DI_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         A_DI_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         B_DI_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         C_DI_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         OP_EX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         A_EX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         B_EX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         C_EX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         OP_MEM_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         A_MEM_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         B_MEM_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         C_MEM_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         OP_RE_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         A_RE_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         B_RE_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         C_RE_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         B_DI_MUX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         B_EX_MUX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         B_MEM_MUX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         RW_OUT : OUT STD_LOGIC;
+         QA_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         QB_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         Ctrl_Alu_OUT : OUT STD_LOGIC_VECTOR (2 downto 0);
+         S_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         ADDR_DATA_MEM_MUX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
+         MEM_DATA_OUT_OUT : OUT STD_LOGIC_VECTOR (7 downto 0)
+		);
     END COMPONENT;
     
 
@@ -57,6 +88,37 @@ ARCHITECTURE behavior OF test_data_path IS
    signal ADDR_W_OUT : std_logic_vector (3 downto 0);
    signal W_OUT : std_logic;
    signal DATA_OUT : std_logic_vector (7 downto 0);
+	
+	--Internal signals
+   signal IP_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal next_IP_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal INSTR_DATA_OUT : STD_LOGIC_VECTOR (31 downto 0);
+   signal OP_DI_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal A_DI_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal B_DI_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal C_DI_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal OP_EX_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal A_EX_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal B_EX_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal C_EX_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal OP_MEM_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal A_MEM_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal B_MEM_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal C_MEM_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal OP_RE_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal A_RE_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal B_RE_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal C_RE_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal B_DI_MUX_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal B_EX_MUX_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal B_MEM_MUX_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal RW_OUT : STD_LOGIC;
+   signal QA_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal QB_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal Ctrl_Alu_OUT : STD_LOGIC_VECTOR (2 downto 0);
+   signal S_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal ADDR_DATA_MEM_MUX_OUT : STD_LOGIC_VECTOR (7 downto 0);
+   signal MEM_DATA_OUT_OUT : STD_LOGIC_VECTOR (7 downto 0);
 
    -- Clock period definitions
    constant CLK_period : time := 10 ns;
@@ -68,8 +130,39 @@ BEGIN
           RST => RST,
           CLK => CLK,
           ADDR_W_OUT => ADDR_W_OUT,
-			 W_OUT => W_OUT,
-			 DATA_OUT => DATA_OUT
+          W_OUT => W_OUT,
+          DATA_OUT => DATA_OUT
+
+          ,
+          IP_OUT => IP_OUT,
+          next_IP_OUT => next_IP_OUT,
+          INSTR_DATA_OUT => INSTR_DATA_OUT,
+          OP_DI_OUT => OP_DI_OUT,
+          A_DI_OUT => A_DI_OUT,
+          B_DI_OUT => B_DI_OUT,
+          C_DI_OUT => C_DI_OUT,
+          OP_EX_OUT => OP_EX_OUT,
+          A_EX_OUT => A_EX_OUT,
+          B_EX_OUT => B_EX_OUT,
+          C_EX_OUT => C_EX_OUT,
+          OP_MEM_OUT => OP_MEM_OUT,
+          A_MEM_OUT => A_MEM_OUT,
+          B_MEM_OUT => B_MEM_OUT,
+          C_MEM_OUT => C_MEM_OUT,
+          OP_RE_OUT => OP_RE_OUT,
+          A_RE_OUT => A_RE_OUT,
+          B_RE_OUT => B_RE_OUT,
+          C_RE_OUT => C_RE_OUT,
+          B_DI_MUX_OUT => B_DI_MUX_OUT,
+          B_EX_MUX_OUT => B_EX_MUX_OUT,
+          B_MEM_MUX_OUT => B_MEM_MUX_OUT,
+          RW_OUT => RW_OUT,
+          QA_OUT => QA_OUT,
+          QB_OUT => QB_OUT,
+          Ctrl_Alu_OUT => Ctrl_Alu_OUT,
+          S_OUT => S_OUT,
+          ADDR_DATA_MEM_MUX_OUT => ADDR_DATA_MEM_MUX_OUT,
+          MEM_DATA_OUT_OUT => MEM_DATA_OUT_OUT
         );
 
    -- Clock process definitions
@@ -81,6 +174,6 @@ BEGIN
 		wait for CLK_period/2;
    end process;
 	
-	RST <= '1' after 100 ns;
+	RST <= '1' after 320 ns;
 
 END;

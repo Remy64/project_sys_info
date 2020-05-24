@@ -36,7 +36,39 @@ entity data_path is
            CLK : in STD_LOGIC;
            ADDR_W_OUT : out STD_LOGIC_VECTOR (3 downto 0);
 			  W_OUT : out STD_LOGIC;
-			  DATA_OUT : out STD_LOGIC_VECTOR (7 downto 0));
+			  DATA_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+
+			  IP_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           next_IP_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           INSTR_DATA_OUT : out STD_LOGIC_VECTOR (31 downto 0);
+           OP_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           A_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           B_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           C_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           OP_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           A_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           B_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           C_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           OP_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           A_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           B_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           C_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           OP_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           A_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           B_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           C_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           B_DI_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           B_EX_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           B_MEM_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+	        RW_OUT : out STD_LOGIC;
+           QA_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           QB_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           Ctrl_Alu_OUT : out STD_LOGIC_VECTOR (2 downto 0);
+           S_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+           ADDR_DATA_MEM_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+	        MEM_DATA_OUT_OUT : out STD_LOGIC_VECTOR (7 downto 0)
+			  
+			  );
 end data_path;
 
 architecture Behavioral of data_path is
@@ -91,7 +123,7 @@ architecture Behavioral of data_path is
               OUT_DATA : out  STD_LOGIC_VECTOR (7 downto 0));
     end component;
 
-    signal IP : STD_LOGIC_VECTOR (7 downto 0) := "00000000"; -- read first instruction first
+    signal IP : STD_LOGIC_VECTOR (7 downto 0) := (others => '0'); -- read first instruction first
     signal next_IP : STD_LOGIC_VECTOR (7 downto 0);
     signal INSTR_DATA : STD_LOGIC_VECTOR (31 downto 0);
     signal OP_DI : STD_LOGIC_VECTOR (7 downto 0);
@@ -127,7 +159,11 @@ begin
     process
     begin
         wait until CLK'EVENT and CLK = '1';
-        next_IP <= std_logic_vector(unsigned(IP) + 1);
+        if to_integer(unsigned(IP)) = 34 then
+            next_IP <= (others => '0');
+        else
+            next_IP <= std_logic_vector(to_unsigned(to_integer(unsigned(IP)) + 1, 8));
+        end if;
     end process;
     IP <= next_IP;
 
@@ -166,7 +202,7 @@ begin
                                     OP_DI,
                                     A_DI,
                                     B_DI_MUX,
-                                    C_DI,
+                                    QB,
                                     OP_EX,
                                     A_EX,
                                     B_EX,
@@ -189,9 +225,9 @@ begin
                             S);
 
     -- MUX pipe EX
-    B_EX_MUX <= S when OP_DI = X"01" or
-                       OP_DI = X"03" or
-                       OP_DI = X"02" else B_EX; -- pour les opérations arithmétiques, on met la sortie de l'UAL
+    B_EX_MUX <= S when OP_EX = X"01" or
+                       OP_EX = X"03" or
+                       OP_EX = X"02" else B_EX; -- pour les opérations arithmétiques, on met la sortie de l'UAL
 
     -- interface exécution des instructions / mémoire
     ex_mem_interface : pipe PORT MAP(CLK,
@@ -229,11 +265,51 @@ begin
                                      C_RE);
 
     -- LC pipe RE
-    W <= '1' when OP_RE /= X"08" else '0'; -- on ecrit dans un registre pour toutes les instructions sauf "STORE"
-
+    --W <= '1' when OP_RE /= X"08" and OP_RE /= X"00" else '0'; -- on ecrit dans un registre pour toutes les instructions sauf "STORE"
+    --W <= '1' when OP_RE = X"01"
+    --           or OP_RE = X"02"
+    --           or OP_RE = X"03"
+    --           or OP_RE = X"04"
+    --           or OP_RE = X"05"
+    --           or OP_RE = X"06"
+    --           or OP_RE = X"07"
+    --else '0'; -- on ecrit dans un registre pour toutes les instructions sauf "STR" et "NOP"
+	 W <= '1' when OP_RE >= X"01" and OP_RE <= X"07" else '0'; -- on ecrit dans un registre pour toutes les instructions sauf "STR" et "NOP"
+	 
     -- sorties
     ADDR_W_OUT <= A_RE(3 downto 0);
     W_OUT <= W;
     DATA_OUT <= B_RE;
+	 
+	 -- sorties test
+    IP_OUT <= IP;
+    next_IP_OUT <= next_IP;
+    INSTR_DATA_OUT <= INSTR_DATA;
+    OP_DI_OUT <= OP_DI;
+    A_DI_OUT <= A_DI;
+    B_DI_OUT <= B_DI;
+    C_DI_OUT <= C_DI;
+    OP_EX_OUT <= OP_EX;
+    A_EX_OUT <= A_EX;
+    B_EX_OUT <= B_EX;
+    C_EX_OUT <= C_EX;
+    OP_MEM_OUT <= OP_MEM;
+    A_MEM_OUT <= A_MEM;
+    B_MEM_OUT <= B_MEM;
+    C_MEM_OUT <= C_MEM;
+    OP_RE_OUT <= OP_RE;
+    A_RE_OUT <= A_RE;
+    B_RE_OUT <= B_RE;
+    C_RE_OUT <= C_RE;
+    B_DI_MUX_OUT <= B_DI_MUX;
+    B_EX_MUX_OUT <= B_EX_MUX;
+    B_MEM_MUX_OUT <= B_MEM_MUX;
+	 RW_OUT <= RW;
+    QA_OUT <= QA;
+    QB_OUT <= QB;
+    Ctrl_Alu_OUT <= Ctrl_Alu;
+    S_OUT <= S;
+    ADDR_DATA_MEM_MUX_OUT <= ADDR_DATA_MEM_MUX;
+	 MEM_DATA_OUT_OUT <= MEM_DATA_OUT;
 
 end Behavioral;

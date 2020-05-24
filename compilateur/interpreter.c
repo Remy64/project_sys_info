@@ -118,10 +118,11 @@ int interpreteInstruction(Instruction instr) {
             vars[instr.args[0]] = instr.args[1];
             break;
         case JMF:
-            if(!vars[instr.args[0]]) {
+            if(vars[instr.args[0]]) {
+                break;
+            } else {
                 return instr.args[1];
             }
-            break;
         case JMP:
             return instr.args[0];
         case PRI:
@@ -159,12 +160,7 @@ int main(int argc, char * argv[]) {
 	}
         int args[3];
         char * iter = NULL;
-        int i = 0;
-        while((iter = strsep(&line, "\t")) != NULL && i < 4) {
-            int length = strlen(iter);
-            if(iter[length-1] == '\n') {
-                iter[length-1] = '\0';
-            }
+        for(int i = 0; (iter = strsep(&line, "\t")) != NULL && i < 4; i++) {
             if(i == 0) {
                 if (strcmp(iter, "ADD") == 0) {
                     instructions[nbLines].type = ADD;
@@ -195,12 +191,15 @@ int main(int argc, char * argv[]) {
                     return -1;
 		}
             } else {
+                if(i == 3) {
+                    iter[strlen(iter)-1] = '\0'; //replace '\n' with '\0'
+                }
                 instructions[nbLines].args[i-1] = (int) strtol(iter, (char **) NULL, 10);
             }
-            i++;
         }
     }
     free(line);
+    fclose(asmFile);
 
     //interpreter
     int i = 0;
@@ -219,7 +218,6 @@ int main(int argc, char * argv[]) {
     }
 
     free(instructions);
-    fclose(asmFile);
 
     return 0;
 }
