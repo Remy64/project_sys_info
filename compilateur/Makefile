@@ -3,25 +3,21 @@ all: compiler
 
 # build the compiler
 compiler:
-	yacc -d parser.y
-	mv y.tab.h parser.h
-	mv y.tab.c parser.y.c
-	lex parser.l
-	mv lex.yy.c parser.l.c
-	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' parser.y.c
-	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' parser.h
-	gcc -c symboltable.c instructions.c
-	gcc parser.y.c parser.l.c symboltable.o instructions.o -ly -ll -o parser
-	@#rm -f symboltable.o instructions.o
-	rm -f symboltable.o instructions.o parser.h *.l.c *.y.c
+	yacc -d compiler.y -o compiler.y.c
+	lex -o compiler.l.c compiler.l
+	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' compiler.y.c
+	sed -i 's/typedef int YYSTYPE;/typedef union { int i; char * str; } YYSTYPE;/' compiler.y.h
+	gcc -c variables.c instructions.c
+	gcc compiler.y.c compiler.l.c variables.o instructions.o -ly -ll -o compiler
+	rm -f variables.o instructions.o *.l.c *.y.*
 
 # compile a file
 compile:
-	@if [ ! -f ./parser ]; then\
+	@if [ ! -f ./compiler ]; then\
 		make compiler;\
 	fi
-	@#printf "\nParsed tokens :\n\n"
-	@cat $(file).c | ./parser
+	@#printf "\nLexed tokens :\n\n"
+	@cat $(file).c | ./compiler
 	@mv output.s $(file).s
 	@#printf "\nAssembly code generated :\n\n"
 	@printf "Assembly code generated :\n\n"
@@ -40,7 +36,6 @@ interprete:
 	@./interpreter $(file).s
 
 clean:
-	@#rm -f *.l.c *.y.c *.s parser.h parser interpreter
-	rm -f *.s parser interpreter
+	rm -f tests/*.s *.s compiler interpreter
 
 # note : @ prevents make from diplaying the command

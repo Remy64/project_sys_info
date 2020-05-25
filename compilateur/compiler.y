@@ -1,12 +1,10 @@
 %{
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
-#include <string.h>
-#include <math.h>
 
-#include "symboltable.h"
+#include "variables.h"
 #include "instructions.h"
 
 
@@ -16,7 +14,6 @@ void yyerror(const char *s);
 int tempAddrPointer = 100;
 
 %}
-
 
 %right tAFF
 
@@ -59,31 +56,9 @@ Body:
 	;
 
 Instruction:
-	  Type tNAME tAFF Expression tSC {
-		int varAddr = pushSymbol($2.str, false, true);
-		instruction(COP, varAddr, $4.i, NONE);
-		freeTempVarAddr($4.i);
-	} Instruction
-	| tCONST Type tNAME tAFF Expression tSC {
-		int varAddr = pushSymbol($3.str, true, true);
-		instruction(COP, varAddr, $5.i, NONE);
-		freeTempVarAddr($5.i);
-	} Instruction
-	| Type tNAME tSC {
-		pushSymbol($2.str, false, false);
-	} Instruction
-	| tNAME tAFF Expression tSC {
-		int varAddr = getSymbolAddr($1.str);
-		if(isSymbolConst(varAddr)) {
-			fprintf(stderr, "FATAL ERROR : Can not affect a value to a constant");
-			exit(-1);
-		}
-		if(!isSymbolInit(varAddr)) {
-			initializeSymbol(varAddr);
-		}
-		instruction(COP, varAddr, $3.i, NONE);
-		freeTempVarAddr($3.i);
-	} Instruction
+	  Type Declaration_Var Other_Declaration_Var tSC Instruction
+	| tCONST Type Declaration_Const Other_Declaration_Const tSC Instruction
+	| Assignment tSC Instruction
 	| tPRINTF tOB Expression tCB tSC {
 		instruction(PRI, $3.i, NONE, NONE);
                 freeTempVarAddr($3.i);
@@ -139,6 +114,50 @@ Instruction:
 
 Type: 
 	  tINT
+	;
+
+Declaration_Var:
+	  tNAME tAFF Expression { //declaration and assignment
+		int varAddr = pushSymbol($1.str, false, true);
+		instruction(COP, varAddr, $3.i, NONE);
+		freeTempVarAddr($3.i);
+	}
+	| tNAME { //declaration only
+		pushSymbol($1.str, false, false);
+	}
+	;
+
+Declaration_Const:
+	  tNAME tAFF Expression { //declaration and mandatory assignment for constants
+		int varAddr = pushSymbol($1.str, true, true);
+		instruction(COP, varAddr, $3.i, NONE);
+		freeTempVarAddr($3.i);
+	}
+	;
+
+Other_Declaration_Var:
+	  tCOMMA Declaration_Var Other_Declaration_Var
+	| /* epsilon */
+	;
+
+Other_Declaration_Const:
+	  tCOMMA Declaration_Const Other_Declaration_Const
+	| /* epsilon */
+	;
+
+Assignment:
+	  tNAME tAFF Expression {
+		int varAddr = getSymbolAddr($1.str);
+		if(isSymbolConst(varAddr)) {
+			fprintf(stderr, "FATAL ERROR : Can not affect a value to a constant");
+			exit(-1);
+		}
+		if(!isSymbolInit(varAddr)) {
+			initializeSymbol(varAddr);
+		}
+		instruction(COP, varAddr, $3.i, NONE);
+		freeTempVarAddr($3.i);
+	}
 	;
 
 Else: 

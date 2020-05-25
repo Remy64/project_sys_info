@@ -6,6 +6,7 @@
 #define NONE -1
 #define TEMP -42
 
+
 typedef enum {
 	ADD,
 	SOU,
@@ -24,7 +25,7 @@ typedef enum {
 
 // adds an instructions to the instructions buffer
 // return the instruction address
-// note : use NONE when an argument is not needed for readability reasons
+// note : use NONE when an argument is not needed for readability reasons, and use TEMP when it has to be updated
 int instruction(Type type, int arg1, int arg2, int arg3);
 
 // get the first available instruction address

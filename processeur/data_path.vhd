@@ -34,39 +34,40 @@ use IEEE.NUMERIC_STD.ALL;
 entity data_path is
     port ( RST : in STD_LOGIC;
            CLK : in STD_LOGIC;
-           ADDR_W_OUT : out STD_LOGIC_VECTOR (3 downto 0);
-			  W_OUT : out STD_LOGIC;
-			  DATA_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-
-			  IP_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           next_IP_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           INSTR_DATA_OUT : out STD_LOGIC_VECTOR (31 downto 0);
-           OP_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           A_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           B_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           C_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           OP_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           A_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           B_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           C_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           OP_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           A_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           B_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           C_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           OP_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           A_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           B_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           C_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           B_DI_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           B_EX_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           B_MEM_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-	        RW_OUT : out STD_LOGIC;
            QA_OUT : out STD_LOGIC_VECTOR (7 downto 0);
            QB_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           Ctrl_Alu_OUT : out STD_LOGIC_VECTOR (2 downto 0);
-           S_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-           ADDR_DATA_MEM_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
-	        MEM_DATA_OUT_OUT : out STD_LOGIC_VECTOR (7 downto 0)
+           ADDR_W_OUT : out STD_LOGIC_VECTOR (3 downto 0);
+			  W_OUT : out STD_LOGIC;
+			  DATA_OUT : out STD_LOGIC_VECTOR (7 downto 0)
+
+--           ;
+--			    IP_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           next_IP_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           INSTR_DATA_OUT : out STD_LOGIC_VECTOR (31 downto 0);
+--           OP_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           A_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           B_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           C_DI_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           OP_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           A_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           B_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           C_EX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           OP_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           A_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           B_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           C_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           OP_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           A_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           B_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           C_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           B_DI_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           B_EX_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           B_MEM_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--	          RW_OUT : out STD_LOGIC;
+--           Ctrl_Alu_OUT : out STD_LOGIC_VECTOR (2 downto 0);
+--           S_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--           ADDR_DATA_MEM_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
+--	          MEM_DATA_OUT_OUT : out STD_LOGIC_VECTOR (7 downto 0)
 			  
 			  );
 end data_path;
@@ -277,39 +278,39 @@ begin
 	 W <= '1' when OP_RE >= X"01" and OP_RE <= X"07" else '0'; -- on ecrit dans un registre pour toutes les instructions sauf "STR" et "NOP"
 	 
     -- sorties
+    QA_OUT <= QA;
+    QB_OUT <= QB;
     ADDR_W_OUT <= A_RE(3 downto 0);
     W_OUT <= W;
     DATA_OUT <= B_RE;
 	 
 	 -- sorties test
-    IP_OUT <= IP;
-    next_IP_OUT <= next_IP;
-    INSTR_DATA_OUT <= INSTR_DATA;
-    OP_DI_OUT <= OP_DI;
-    A_DI_OUT <= A_DI;
-    B_DI_OUT <= B_DI;
-    C_DI_OUT <= C_DI;
-    OP_EX_OUT <= OP_EX;
-    A_EX_OUT <= A_EX;
-    B_EX_OUT <= B_EX;
-    C_EX_OUT <= C_EX;
-    OP_MEM_OUT <= OP_MEM;
-    A_MEM_OUT <= A_MEM;
-    B_MEM_OUT <= B_MEM;
-    C_MEM_OUT <= C_MEM;
-    OP_RE_OUT <= OP_RE;
-    A_RE_OUT <= A_RE;
-    B_RE_OUT <= B_RE;
-    C_RE_OUT <= C_RE;
-    B_DI_MUX_OUT <= B_DI_MUX;
-    B_EX_MUX_OUT <= B_EX_MUX;
-    B_MEM_MUX_OUT <= B_MEM_MUX;
-	 RW_OUT <= RW;
-    QA_OUT <= QA;
-    QB_OUT <= QB;
-    Ctrl_Alu_OUT <= Ctrl_Alu;
-    S_OUT <= S;
-    ADDR_DATA_MEM_MUX_OUT <= ADDR_DATA_MEM_MUX;
-	 MEM_DATA_OUT_OUT <= MEM_DATA_OUT;
+--    IP_OUT <= IP;
+--    next_IP_OUT <= next_IP;
+--    INSTR_DATA_OUT <= INSTR_DATA;
+--    OP_DI_OUT <= OP_DI;
+--    A_DI_OUT <= A_DI;
+--    B_DI_OUT <= B_DI;
+--    C_DI_OUT <= C_DI;
+--    OP_EX_OUT <= OP_EX;
+--    A_EX_OUT <= A_EX;
+--    B_EX_OUT <= B_EX;
+--    C_EX_OUT <= C_EX;
+--    OP_MEM_OUT <= OP_MEM;
+--    A_MEM_OUT <= A_MEM;
+--    B_MEM_OUT <= B_MEM;
+--    C_MEM_OUT <= C_MEM;
+--    OP_RE_OUT <= OP_RE;
+--    A_RE_OUT <= A_RE;
+--    B_RE_OUT <= B_RE;
+--    C_RE_OUT <= C_RE;
+--    B_DI_MUX_OUT <= B_DI_MUX;
+--    B_EX_MUX_OUT <= B_EX_MUX;
+--    B_MEM_MUX_OUT <= B_MEM_MUX;
+--	   RW_OUT <= RW;
+--    Ctrl_Alu_OUT <= Ctrl_Alu;
+--    S_OUT <= S;
+--    ADDR_DATA_MEM_MUX_OUT <= ADDR_DATA_MEM_MUX;
+--	   MEM_DATA_OUT_OUT <= MEM_DATA_OUT;
 
 end Behavioral;

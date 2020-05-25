@@ -1,9 +1,12 @@
-#include <stdbool.h>
+#ifndef VARIABLES_H
+#define VARIABLES_H
 
+#include <stdbool.h>
 
 #define VARS_TABLE_MAX_SIZE 100
 #define TEMP_VARS_FIRST_ADDR 100
 #define MAX_TEMP_VARS 1000
+
 
 void incrementDepth();
 void decrementDepth();
@@ -15,3 +18,5 @@ bool isSymbolConst(int addr);
 
 int getTempVarAddr();
 void freeTempVarAddr(int tempVarAddr);
+
+#endif //VARIABLES_H

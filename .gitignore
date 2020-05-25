@@ -1,4 +1,4 @@
-parser
+compiler
 interpreter
 *.o
 *.l.c
