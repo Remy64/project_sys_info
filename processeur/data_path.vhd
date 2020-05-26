@@ -55,11 +55,9 @@ entity data_path is
 --           OP_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
 --           A_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
 --           B_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
---           C_MEM_OUT : out STD_LOGIC_VECTOR (7 downto 0);
 --           OP_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
 --           A_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
 --           B_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
---           C_RE_OUT : out STD_LOGIC_VECTOR (7 downto 0);
 --           B_DI_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
 --           B_EX_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
 --           B_MEM_MUX_OUT : out STD_LOGIC_VECTOR (7 downto 0);
@@ -138,11 +136,9 @@ architecture Behavioral of data_path is
     signal OP_MEM : STD_LOGIC_VECTOR (7 downto 0);
     signal A_MEM : STD_LOGIC_VECTOR (7 downto 0);
     signal B_MEM : STD_LOGIC_VECTOR (7 downto 0);
-    signal C_MEM : STD_LOGIC_VECTOR (7 downto 0);
     signal OP_RE : STD_LOGIC_VECTOR (7 downto 0);
     signal A_RE : STD_LOGIC_VECTOR (7 downto 0);
     signal B_RE : STD_LOGIC_VECTOR (7 downto 0);
-    signal C_RE : STD_LOGIC_VECTOR (7 downto 0);
     signal B_DI_MUX : STD_LOGIC_VECTOR (7 downto 0);
     signal B_EX_MUX : STD_LOGIC_VECTOR (7 downto 0);
     signal B_MEM_MUX : STD_LOGIC_VECTOR (7 downto 0);
@@ -160,10 +156,14 @@ begin
     process
     begin
         wait until CLK'EVENT and CLK = '1';
-        if to_integer(unsigned(IP)) = 34 then
+        if RST = '0' then
             next_IP <= (others => '0');
         else
-            next_IP <= std_logic_vector(to_unsigned(to_integer(unsigned(IP)) + 1, 8));
+            if to_integer(unsigned(IP)) = 34 then
+                next_IP <= (others => '0');
+            else
+                next_IP <= std_logic_vector(to_unsigned(to_integer(unsigned(IP)) + 1, 8));
+            end if;
         end if;
     end process;
     IP <= next_IP;
@@ -235,11 +235,11 @@ begin
                                      OP_EX,
                                      A_EX,
                                      B_EX_MUX,
-                                     C_EX,
+                                     (others => '0'),
                                      OP_MEM,
                                      A_MEM,
                                      B_MEM,
-                                     C_MEM);
+                                     OPEN);
 
     RW <= '1' when OP_MEM = X"08" else '0'; -- écriture pour "STORE", lecture pour "LOAD"
 
@@ -259,11 +259,11 @@ begin
                                      OP_MEM,
                                      A_MEM,
                                      B_MEM_MUX,
-                                     C_MEM,
+                                     (others => '0'),
                                      OP_RE,
                                      A_RE,
                                      B_RE,
-                                     C_RE);
+                                     OPEN);
 
     -- LC pipe RE
     --W <= '1' when OP_RE /= X"08" and OP_RE /= X"00" else '0'; -- on ecrit dans un registre pour toutes les instructions sauf "STORE"
@@ -299,11 +299,9 @@ begin
 --    OP_MEM_OUT <= OP_MEM;
 --    A_MEM_OUT <= A_MEM;
 --    B_MEM_OUT <= B_MEM;
---    C_MEM_OUT <= C_MEM;
 --    OP_RE_OUT <= OP_RE;
 --    A_RE_OUT <= A_RE;
 --    B_RE_OUT <= B_RE;
---    C_RE_OUT <= C_RE;
 --    B_DI_MUX_OUT <= B_DI_MUX;
 --    B_EX_MUX_OUT <= B_EX_MUX;
 --    B_MEM_MUX_OUT <= B_MEM_MUX;

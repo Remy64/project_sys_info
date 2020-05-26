@@ -64,11 +64,9 @@ ARCHITECTURE behavior OF test_data_path IS
 --         OP_MEM_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
 --         A_MEM_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
 --         B_MEM_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
---         C_MEM_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
 --         OP_RE_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
 --         A_RE_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
 --         B_RE_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
---         C_RE_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
 --         B_DI_MUX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
 --         B_EX_MUX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
 --         B_MEM_MUX_OUT : OUT STD_LOGIC_VECTOR (7 downto 0);
@@ -107,11 +105,9 @@ ARCHITECTURE behavior OF test_data_path IS
 --   signal OP_MEM_OUT : STD_LOGIC_VECTOR (7 downto 0);
 --   signal A_MEM_OUT : STD_LOGIC_VECTOR (7 downto 0);
 --   signal B_MEM_OUT : STD_LOGIC_VECTOR (7 downto 0);
---   signal C_MEM_OUT : STD_LOGIC_VECTOR (7 downto 0);
 --   signal OP_RE_OUT : STD_LOGIC_VECTOR (7 downto 0);
 --   signal A_RE_OUT : STD_LOGIC_VECTOR (7 downto 0);
 --   signal B_RE_OUT : STD_LOGIC_VECTOR (7 downto 0);
---   signal C_RE_OUT : STD_LOGIC_VECTOR (7 downto 0);
 --   signal B_DI_MUX_OUT : STD_LOGIC_VECTOR (7 downto 0);
 --   signal B_EX_MUX_OUT : STD_LOGIC_VECTOR (7 downto 0);
 --   signal B_MEM_MUX_OUT : STD_LOGIC_VECTOR (7 downto 0);
@@ -151,11 +147,9 @@ BEGIN
 --          OP_MEM_OUT => OP_MEM_OUT,
 --          A_MEM_OUT => A_MEM_OUT,
 --          B_MEM_OUT => B_MEM_OUT,
---          C_MEM_OUT => C_MEM_OUT,
 --          OP_RE_OUT => OP_RE_OUT,
 --          A_RE_OUT => A_RE_OUT,
 --          B_RE_OUT => B_RE_OUT,
---          C_RE_OUT => C_RE_OUT,
 --          B_DI_MUX_OUT => B_DI_MUX_OUT,
 --          B_EX_MUX_OUT => B_EX_MUX_OUT,
 --          B_MEM_MUX_OUT => B_MEM_MUX_OUT,
@@ -175,6 +169,6 @@ BEGIN
 		wait for CLK_period/2;
    end process;
 	
-	RST <= '1' after 320 ns;
+	RST <= '0' after 350 ns, '1' after 400 ns;
 
 END;
